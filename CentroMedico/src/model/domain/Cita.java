@@ -1,15 +1,15 @@
 package model.domain;
 
 import java.time.LocalDate;
-public class cita {
+public class Cita {
 
     private LocalDate fecha;
     private String hora;
     private String motivo;
-    private paciente paciente;
-    private medico medico;
+    private Paciente paciente;
+    private Medico medico;
 
-    public cita(LocalDate fecha, String hora, String motivo, paciente paciente, medico medico) {
+    public Cita(LocalDate fecha, String hora, String motivo, Paciente paciente, Medico medico) {
         this.fecha = fecha;
         this.hora = hora;
         this.motivo = motivo;
@@ -42,19 +42,19 @@ public class cita {
         this.motivo = motivo;
     }
 
-    public paciente getPaciente() {
+    public Paciente getPaciente() {
         return paciente;
     }
 
-    public void setPaciente(paciente paciente) {
+    public void setPaciente(Paciente paciente) {
         this.paciente = paciente;
     }
 
-    public medico getMedico() {
+    public Medico getMedico() {
         return medico;
     }
 
-    public void setMedico(medico medico) {
+    public void setMedico(Medico medico) {
         this.medico = medico;
     }
 

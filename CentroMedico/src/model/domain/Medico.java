@@ -1,11 +1,11 @@
 package model.domain;
 
-public class medico extends persona {
+public class Medico extends Persona {
     
     private String especialidad;
     private String numeroRegistro;
 
-    public medico(String identificacion, String nombre, String telefono, String especialidad, String numeroRegistro) {
+    public Medico(String identificacion, String nombre, String telefono, String especialidad, String numeroRegistro) {
         super(identificacion, nombre, telefono);
         this.especialidad = especialidad;
         this.numeroRegistro = numeroRegistro;
