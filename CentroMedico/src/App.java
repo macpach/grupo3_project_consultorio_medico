@@ -18,6 +18,8 @@ public class App {
         Cita cita = new Cita(LocalDate.now(), "10:00 AM", "Chequeo", paciente, medico);
         System.out.println("Cita asignada a " + cita.getPaciente().getNombre() + " con " + cita.getMedico().getNombre());
 
+        paciente.registrarConsulta("Chequeo general", "Sin hallazgos relevantes", "Continuar controles", LocalDate.now());
+
        
         try {
             
