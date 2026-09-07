@@ -1,11 +1,11 @@
 package model.domain;
-public abstract class persona implements RolClinico {
+public abstract class Persona implements RolClinico {
 
     private String identificacion;
     private String nombre;
     private String telefono;
 
-    public persona(String identificacion, String nombre, String telefono) {
+    public Persona(String identificacion, String nombre, String telefono) {
         if (identificacion == null || identificacion.trim().isEmpty()) {
             throw new IllegalArgumentException("La identificación no puede ser nula ni estar vacía.");
         }

@@ -2,14 +2,14 @@ package model.domain;
 
 import java.time.LocalDate;
 
-public class consulta {
+public class Consulta {
 
     private String motivo;
     private String diagnostico;
     private String tratamiento;
     private LocalDate fecha;
 
-    public consulta(String motivo, String diagnostico, String tratamiento, LocalDate fecha) {
+    public Consulta(String motivo, String diagnostico, String tratamiento, LocalDate fecha) {
         this.motivo = motivo;
         this.diagnostico = diagnostico;
         this.tratamiento = tratamiento;
