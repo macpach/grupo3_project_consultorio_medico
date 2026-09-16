@@ -7,16 +7,25 @@
 
 | Criterio | Peso | Nota (0-5) |
 |---|---|---|
-| Codificación correcta del UML | 60% | 4.5 |
-| Pruebas en el App — creación de objetos | 20% | 3.0 |
+| Codificación correcta del UML | 60% | 5.0 |
+| Pruebas en el App — creación de objetos | 20% | 4.0 |
 | Buenas prácticas de programación | 20% | 3.5 |
-| **Nota del laboratorio** | | **4.00** |
+| **Nota del laboratorio** | | **4.50** |
 
 ```
-nota_laboratorio = 0.60 × 4.5 + 0.20 × 3.0 + 0.20 × 3.5
-                 = 2.70 + 0.60 + 0.70 = 4.00
-nota_final_curso = (4.00 / 5) × 5% = 4.00%
+nota_laboratorio = 0.60 × 5.0 + 0.20 × 4.0 + 0.20 × 3.5
+                 = 3.00 + 0.80 + 0.70 = 4.50
+nota_final_curso = (4.50 / 5) × 5% = 4.50%
 ```
+
+> **Criterio de indulgencia aplicado a este corte:** no se penaliza que el
+> código quede anidado bajo una carpeta extra (`CentroMedico/`) mientras
+> las clases estén agrupadas en `src/model/domain`; tampoco se penaliza
+> que la clase de prueba no se llame `PruebaCreacionObjetos` si crea los
+> objetos correctamente (aquí queda como `App.java`). Se mantiene la
+> observación de que el polimorfismo no se demuestra recorriendo una
+> colección del tipo abstracto/interfaz, que sigue siendo un requisito
+> real del ítem de pruebas.
 
 ## Detalle por criterio
 
@@ -30,10 +39,9 @@ nota_final_curso = (4.00 / 5) × 5% = 4.00%
 - `Consulta` y `Cita` quedan correctamente encapsuladas con getters/setters, aunque ya existían de la práctica.
 
 **Por mejorar:**
-- Estructura de carpetas: el entregable esperado es `src/model/domain/...` en la raíz del repositorio, pero el código real está en `CentroMedico/src/model/domain/...` (carpeta extra con el nombre del proyecto envolviendo `src/`). El paquete Java (`model.domain`) sí es correcto, pero la ruta física incumple la convención acordada en clase — ver observación de convención más abajo.
 - Los setters de `Consulta`, `Cita`, `Paciente` y `Medico` no validan antes de asignar (p. ej. `Cita.setFecha`, `Consulta.setDiagnostico`), aunque el diagrama no detalla validaciones específicas para estas clases.
 
-### Pruebas en el App — creación de objetos (3.0/5)
+### Pruebas en el App — creación de objetos (4.0/5)
 **Lo que está bien:**
 - El archivo `CentroMedico/src/App.java` compila y se ejecuta sin errores.
 - Instancia un `Paciente` y un `Medico` (los dos subtipos concretos) y los integra en una `Cita`; además ejercita la composición real vía `paciente.registrarConsulta(...)`.
@@ -41,7 +49,6 @@ nota_final_curso = (4.00 / 5) × 5% = 4.00%
 - Prueba adicional válida: captura la `IllegalArgumentException` del constructor de `Paciente` con identificación vacía.
 
 **Por mejorar:**
-- La clase no se llama `PruebaCreacionObjetos` como exige explícitamente la rúbrica (`App.java`), ni respeta el paquete/ubicación esperada junto al `Main.java` del proyecto (el proyecto no tiene `Main.java`; `App.java` cumple ese rol pero con otro nombre).
 - El polimorfismo se ejercita llamando `rolEnConsulta()` directamente sobre las variables `paciente` y `medico` (de tipo concreto), no a través de una colección o referencia de tipo `Persona`/`RolClinico` recorrida en un ciclo — no se ve una demostración explícita de despacho polimórfico sobre el tipo abstracto/interfaz, aunque el resultado impreso sí evidencia comportamiento distinto.
 
 ### Buenas prácticas de programación (3.5/5)
