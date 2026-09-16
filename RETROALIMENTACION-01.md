@@ -18,15 +18,6 @@ nota_laboratorio = 0.60 × 5.0 + 0.20 × 4.0 + 0.20 × 3.5
 nota_final_curso = (4.50 / 5) × 5% = 4.50%
 ```
 
-> **Criterio de indulgencia aplicado a este corte:** no se penaliza que el
-> código quede anidado bajo una carpeta extra (`CentroMedico/`) mientras
-> las clases estén agrupadas en `src/model/domain`; tampoco se penaliza
-> que la clase de prueba no se llame `PruebaCreacionObjetos` si crea los
-> objetos correctamente (aquí queda como `App.java`). Se mantiene la
-> observación de que el polimorfismo no se demuestra recorriendo una
-> colección del tipo abstracto/interfaz, que sigue siendo un requisito
-> real del ítem de pruebas.
-
 ## Detalle por criterio
 
 ### Codificación correcta del UML (4.5/5)
