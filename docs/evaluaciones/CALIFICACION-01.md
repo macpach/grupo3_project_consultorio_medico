@@ -1,76 +1,54 @@
-# Retroalimentación — Laboratorio Evaluativo — Codificación de Diseño OO (Momento 1)
+# Retroalimentación — Laboratorio 1: Codificación del diseño OO
 
-**Grupo:** Grupo3 · **Proyecto:** Consultorio Médico (CentroMedico)
-**Fecha límite:** 2026-09-08 23:59 -0500 · **Commit evaluado:** `c114840` (2026-09-07 12:54:31 -0500)
+**Grupo:** Grupo3 · **Proyecto:** Consultorio Médico
+**Fecha límite:** 2026-09-08 23:59 · **Versión revisada:** commit `c114840`
 
-## Calificación
+¡Muy buen trabajo! El diseño quedó muy bien pasado a código.
+
+## Nota
 
 | Criterio | Peso | Nota (0-5) |
 |---|---|---|
-| Codificación correcta del UML | 60% | 5.0 |
-| Pruebas en el App — creación de objetos | 20% | 4.0 |
+| El código sigue el diagrama UML | 60% | 5.0 |
+| Pruebas: creación de objetos en el programa | 20% | 4.0 |
 | Buenas prácticas de programación | 20% | 3.5 |
 | **Nota del laboratorio** | | **4.50** |
 
-```
-nota_laboratorio = 0.60 × 5.0 + 0.20 × 4.0 + 0.20 × 3.5
-                 = 3.00 + 0.80 + 0.70 = 4.50
-nota_final_curso = (4.50 / 5) × 5% = 4.50%
-```
+La nota se calcula así: 60% diseño UML + 20% pruebas + 20% buenas prácticas.
 
-## Detalle por criterio
+## 1. El código sigue el diagrama UML (5.0)
+**Lo que hicieron bien:**
+- `Persona` es abstracta, implementa `RolClinico` y tiene sus atributos privados. El constructor revisa que la identificación no venga vacía y, si viene vacía, lanza `IllegalArgumentException`, tal como se pedía.
+- `datosResumen()` está escrito una sola vez en `Persona`. `rolEnConsulta()` queda pendiente en `Persona` y cada hija (`Paciente` y `Medico`) lo resuelve a su manera.
+- `Paciente` y `Medico` heredan de `Persona`, llaman a `super(...)` y solo agregan sus datos propios, sin repetir los que ya vienen del padre.
+- Un `Paciente` tiene su propio historial de consultas. Las consultas solo se agregan con `registrarConsulta(...)`, así que ninguna `Consulta` existe por fuera de un paciente. Eso es justo lo que pide el diagrama.
+- `Cita` guarda una referencia a un `Paciente` y a un `Medico`, sin ser dueña de ellos, como indica el diagrama.
+- `Consulta` y `Cita` tienen sus atributos privados con getters y setters.
 
-### Codificación correcta del UML (4.5/5)
-**Lo que está bien:**
-- `Persona` (`src/model/domain/Persona.java`) es abstracta, implementa `RolClinico`, encapsula sus tres atributos y valida `identificacion` no nula/no vacía en el constructor exactamente como pide el enunciado, lanzando `IllegalArgumentException`.
-- `datosResumen()` queda implementado en `Persona` combinando `identificacion`, `nombre` y `telefono`; `rolEnConsulta()` queda declarado `abstract` en `Persona` y correctamente resuelto en cada subtipo (`Paciente.java:21`, `Medico.java:15`), cada uno con lógica distinta (EPS/edad vs. especialidad/registro).
-- `Paciente extends Persona` y `Medico extends Persona` invocan `super(...)`, conservan solo sus atributos propios (`edad`/`eps` y `especialidad`/`numeroRegistro` respectivamente) sin duplicar los heredados.
-- La composición `Paciente "1" *-- "0..*" Consulta` está bien resuelta: `Paciente` mantiene `List<Consulta> historialConsultas` y solo se agregan `Consulta` a través de `registrarConsulta(...)` (`Paciente.java:37-39`), sin exponer un setter de la lista completa — coherente con que una `Consulta` no exista fuera de un `Paciente`.
-- `Cita` (`Cita.java`) referencia a `Paciente` y `Medico` por asociación, tal como exige el diagrama (no composición).
-- `Consulta` y `Cita` quedan correctamente encapsuladas con getters/setters, aunque ya existían de la práctica.
+## 2. Pruebas: creación de objetos (4.0)
+**Lo que hicieron bien:**
+- `App` compila y corre sin errores.
+- Crean un `Paciente` y un `Medico` y los usan para armar una `Cita`. También registran una consulta en el paciente.
+- Llaman a `rolEnConsulta()` en los dos objetos sin usar `instanceof`, y se ve en consola que cada uno responde distinto.
+- Prueban además que el constructor rechaza una identificación vacía y atrapan la excepción. ¡Muy bien!
 
-**Por mejorar:**
-- Los setters de `Consulta`, `Cita`, `Paciente` y `Medico` no validan antes de asignar (p. ej. `Cita.setFecha`, `Consulta.setDiagnostico`), aunque el diagrama no detalla validaciones específicas para estas clases.
+## 3. Buenas prácticas (3.5)
+**Lo que hicieron bien:**
+- Hicieron varios commits en distintos momentos, no uno solo al final.
+- Los nombres siguen las reglas de Java: clases como `Paciente` y métodos/variables como `rolEnConsulta`.
+- Al inicio del proyecto usaron una rama (`desarrollo`) y un Pull Request.
 
-### Pruebas en el App — creación de objetos (4.0/5)
-**Lo que está bien:**
-- El archivo `CentroMedico/src/App.java` compila y se ejecuta sin errores.
-- Instancia un `Paciente` y un `Medico` (los dos subtipos concretos) y los integra en una `Cita`; además ejercita la composición real vía `paciente.registrarConsulta(...)`.
-- Ejercita `rolEnConsulta()` sobre ambas instancias sin usar `instanceof`, e imprime el resultado por consola, mostrando comportamiento distinto entre `Paciente` y `Medico`.
-- Prueba adicional válida: captura la `IllegalArgumentException` del constructor de `Paciente` con identificación vacía.
+**Lo que pueden mejorar:**
+- No siguieron la estructura de carpetas acordada en clase: el código quedó dentro de una carpeta extra `CentroMedico/` en vez de ir directamente en `src/model/domain/`.
+- Casi todo el trabajo de este laboratorio lo subieron directo a `main`. Las ramas solo las usaron al comienzo.
+- Algunos mensajes de commit no explican bien el cambio, por ejemplo "poner datos en rol clinico y quitar domain. porque no dio". Un buen mensaje dice qué se hizo y para qué.
+- Un commit aparece con autor `unknown`: ese integrante no tiene configurado su nombre y correo en git, así que no se sabe quién lo hizo.
 
-**Por mejorar:**
-- El polimorfismo se ejercita llamando `rolEnConsulta()` directamente sobre las variables `paciente` y `medico` (de tipo concreto), no a través de una colección o referencia de tipo `Persona`/`RolClinico` recorrida en un ciclo — no se ve una demostración explícita de despacho polimórfico sobre el tipo abstracto/interfaz, aunque el resultado impreso sí evidencia comportamiento distinto.
+## ¿El programa funciona?
+Sí. Compila sin errores y al ejecutarlo muestra correctamente los datos del paciente, del médico, la cita y el mensaje de la excepción.
 
-### Buenas prácticas de programación (3.5/5)
-**Lo que está bien:**
-- 16 commits antes de la fecha límite, con trabajo repartido en varias sesiones (no un único commit final).
-- Nombres de clases en `PascalCase` (`Paciente`, `Medico`, `RolClinico`) y de métodos/variables en `camelCase` (`rolEnConsulta`, `historialConsultas`), siguiendo la convención Java.
-- Uso de una rama (`desarrollo`) y un Pull Request (`#1`, commit `8b45165`) al inicio del proyecto.
-
-**Por mejorar:**
-- Todo el trabajo específico de este laboratorio (11 de los 16 commits, del 2026-09-07) se hizo directamente sobre `main`, sin volver a usar una rama de trabajo ni PR — el flujo de ramas solo se aplicó a la configuración inicial del repo.
-- Algunos mensajes de commit son poco descriptivos o reflejan iteración desordenada: `"poner datos en rol clinico y quitar domain. porque no dio"` (`b9fc25a`), dos commits consecutivos de renombrado (`45410bc`, `68d9931`).
-- Uno de los commits (`c114840`, el de corte) aparece con autor `unknown`, indicando que ese integrante no configuró `user.name`/`user.email` en git.
-
-## Compilación y ejecución
-Compila sin errores:
-```
-javac -d out $(find src -name "*.java")   # exit 0
-```
-Ejecución de `App` (equivalente a `PruebaCreacionObjetos`) con stdin vacío, salida correcta:
-```
-ID: 1017123456 | Nombre: Juan Pérez | Teléfono: 3001234567
-Rol: Paciente | EPS: Sura | Edad: 20 años
-ID: 43210987 | Nombre: Dra. María | Teléfono: 3109876543
-Rol: Médico | Especialidad: General | Registro: RM-123
-Cita asignada a Juan Pérez con Dra. María
-Excepción capturada: La identificación no puede ser nula ni estar vacía.
-```
-
-## Recomendaciones para el siguiente corte
-- Ubicar el código directamente en `<repo>/src/model/domain/` sin envolverlo en una carpeta con el nombre del proyecto (`CentroMedico/`).
-- Nombrar la clase de prueba exactamente `PruebaCreacionObjetos` cuando la rúbrica lo exija por nombre.
-- Demostrar el polimorfismo recorriendo una colección o arreglo de referencias del tipo abstracto/interfaz (`Persona[]` o `List<RolClinico>`) en un ciclo, en vez de invocar el método directamente sobre variables de tipo concreto.
-- Configurar `git config user.name`/`user.email` en todos los equipos de desarrollo para que la autoría de los commits quede identificada.
-- Mantener el uso de ramas de feature + PR durante todo el desarrollo del laboratorio, no solo en la configuración inicial.
+## Para el próximo laboratorio
+- Pongan el código directamente en `src/model/domain/`, sin la carpeta `CentroMedico/`.
+- Cada integrante debe configurar su nombre y correo en git (`git config user.name` y `git config user.email`) en el equipo donde trabaje.
+- Sigan usando ramas durante todo el laboratorio, no solo al inicio.
+- Escriban mensajes de commit claros que digan qué cambió.
