@@ -1,4 +1,5 @@
 package model.domain;
+
 import java.time.LocalDate;
 import java.util.Scanner;
 
@@ -19,8 +20,10 @@ public class Menu {
             System.out.println("\n--- MENÚ CONSULTORIO MÉDICO ---");
             System.out.println("1. Agregar Cita");
             System.out.println("2. Listar Citas");
-            System.out.println("3. Agregar Consulta");
-            System.out.println("4. Listar Consultas");
+            System.out.println("3. Actualizar Cita");
+            System.out.println("4. Eliminar Cita");
+            System.out.println("5. Agregar Consulta");
+            System.out.println("6. Listar Consultas");
             System.out.println("0. Salir");
             System.out.print("Seleccione una opción: ");
             
@@ -40,18 +43,39 @@ public class Menu {
                     System.out.println("Cita agregada con éxito.");
                     break;
                 case 2:
-                    System.out.println("--- Lista de Citas ---");
-                    int tamanoCitas = service.listarCitas().getTamano();
-                    if (tamanoCitas == 0) {
-                        System.out.println("No hay citas registradas.");
-                    } else {
-                        for (int i = 0; i < tamanoCitas; i++) {
-                            Cita c = service.listarCitas().obtener(i);
-                            System.out.println((i + 1) + ". Hora: " + c.getHora() + " | Motivo: " + c.getMotivo());
+                    mostrarCitas();
+                    break;
+                case 3:
+                    mostrarCitas();
+                    if (service.listarCitas().getTamano() > 0) {
+                        System.out.print("Ingrese el número de la cita a actualizar: ");
+                        int indiceActualizar = Integer.parseInt(scanner.nextLine()) - 1;
+                        System.out.print("Nueva hora (Ej. 11:30 AM): ");
+                        String nuevaHora = scanner.nextLine();
+                        System.out.print("Nuevo motivo: ");
+                        String nuevoMotivo = scanner.nextLine();
+                        
+                        if (service.actualizarCita(indiceActualizar, nuevaHora, nuevoMotivo, medicoMock)) {
+                            System.out.println("Cita actualizada exitosamente.");
+                        } else {
+                            System.out.println("Error: No se encontró la cita.");
                         }
                     }
                     break;
-                case 3:
+                case 4:
+                    mostrarCitas();
+                    if (service.listarCitas().getTamano() > 0) {
+                        System.out.print("Ingrese el número de la cita a eliminar: ");
+                        int indiceEliminar = Integer.parseInt(scanner.nextLine()) - 1;
+                        
+                        if (service.eliminarCita(indiceEliminar)) {
+                            System.out.println("Cita eliminada exitosamente.");
+                        } else {
+                            System.out.println("Error: No se pudo eliminar la cita.");
+                        }
+                    }
+                    break;
+                case 5:
                     System.out.print("Motivo de consulta: ");
                     String motivoCons = scanner.nextLine();
                     System.out.print("Diagnóstico: ");
@@ -61,7 +85,7 @@ public class Menu {
                     service.agregarConsulta(motivoCons, diag, trat, LocalDate.now());
                     System.out.println("Consulta registrada con éxito.");
                     break;
-                case 4:
+                case 6:
                     System.out.println("--- Lista de Consultas ---");
                     int tamanoConsultas = service.listarConsultas().getTamano();
                     if (tamanoConsultas == 0) {
@@ -78,6 +102,20 @@ public class Menu {
                     break;
                 default:
                     System.out.println("Opción inválida.");
+            }
+        }
+    }
+
+    // Método de ayuda para no repetir el código de imprimir citas
+    private void mostrarCitas() {
+        System.out.println("--- Lista de Citas ---");
+        int tamanoCitas = service.listarCitas().getTamano();
+        if (tamanoCitas == 0) {
+            System.out.println("No hay citas registradas.");
+        } else {
+            for (int i = 0; i < tamanoCitas; i++) {
+                Cita c = service.listarCitas().obtener(i);
+                System.out.println((i + 1) + ". Hora: " + c.getHora() + " | Motivo: " + c.getMotivo());
             }
         }
     }
