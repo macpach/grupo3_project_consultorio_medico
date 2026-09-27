@@ -1,20 +1,20 @@
 package model.domain;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 
 public class Paciente extends Persona {
 
     private int edad;
     private String eps;
-    private List<Consulta> historialConsultas;
+    private ListaSimple<Consulta> historialConsultas;
+    private ListaSimple<Cita> citas;
 
     public Paciente(String identificacion, String nombre, String telefono, int edad, String eps) {
         super(identificacion, nombre, telefono);
         this.edad = edad;
         this.eps = eps;
-        this.historialConsultas = new ArrayList<>();
+        this.historialConsultas = new ListaSimple<>();
+        this.citas = new ListaSimple<>();
     }
 
     @Override
@@ -40,11 +40,19 @@ public class Paciente extends Persona {
     }
 
     public void registrarConsulta(String motivo, String diagnostico, String tratamiento, LocalDate fecha) {
-        historialConsultas.add(new Consulta(motivo, diagnostico, tratamiento, fecha));
+        historialConsultas.insertarFinal(new Consulta(motivo, diagnostico, tratamiento, fecha));
     }
 
-    public List<Consulta> getHistorialConsultas() {
+    public ListaSimple<Consulta> getHistorialConsultas() {
         return historialConsultas;
+    }
+
+    public void registrarCita(Cita cita) {
+        citas.insertarFinal(cita);
+    }
+
+    public ListaSimple<Cita> getCitas() {
+        return citas;
     }
 
 }
