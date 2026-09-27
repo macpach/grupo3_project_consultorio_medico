@@ -9,7 +9,8 @@ public class Consultorio {
         this.pacienteActual = paciente;
     }
 
-    // --- Operaciones para Citas ---
+    // --- Operaciones para Citas (CRUD Completo) ---
+    
     public void agregarCita(Cita cita) {
         pacienteActual.getCitas().insertarFinal(cita);
     }
@@ -18,8 +19,21 @@ public class Consultorio {
         return pacienteActual.getCitas();
     }
 
-    public boolean eliminarCita(Cita cita) {
-        return pacienteActual.getCitas().eliminarPorValor(cita);
+    public boolean actualizarCita(int indice, String nuevaHora, String nuevoMotivo, Medico medico) {
+        Cita citaVieja = pacienteActual.getCitas().obtener(indice);
+        if (citaVieja != null) {
+            Cita citaNueva = new Cita(LocalDate.now(), nuevaHora, nuevoMotivo, pacienteActual, medico);
+            return pacienteActual.getCitas().actualizar(citaVieja, citaNueva);
+        }
+        return false;
+    }
+
+    public boolean eliminarCita(int indice) {
+        Cita citaAEliminar = pacienteActual.getCitas().obtener(indice);
+        if (citaAEliminar != null) {
+            return pacienteActual.getCitas().eliminarPorValor(citaAEliminar);
+        }
+        return false;
     }
 
     // --- Operaciones para Consultas ---
@@ -30,9 +44,5 @@ public class Consultorio {
 
     public ListaSimple<Consulta> listarConsultas() {
         return pacienteActual.getHistorialConsultas();
-    }
-
-    public boolean eliminarConsulta(Consulta consulta) {
-        return pacienteActual.getHistorialConsultas().eliminarPorValor(consulta);
     }
 }
