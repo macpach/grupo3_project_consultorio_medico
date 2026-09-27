@@ -9,7 +9,7 @@ public class ListaSimple<T> {
         this.tamano = 0;
     }
 
-
+    // CREAR
     public void insertarFinal(T dato) {
         Nodo<T> nuevoNodo = new Nodo<>(dato);
         if (cabeza == null) {
@@ -24,6 +24,7 @@ public class ListaSimple<T> {
         tamano++;
     }
 
+    // LEER (Buscar)
     public T buscarPorValor(T dato) {
         Nodo<T> actual = cabeza;
         while (actual != null) {
@@ -34,7 +35,30 @@ public class ListaSimple<T> {
         }
         return null;
     }
+    
+    public T obtener(int indice) {
+        if (indice < 0 || indice >= tamano) return null;
+        Nodo<T> actual = cabeza;
+        for (int i = 0; i < indice; i++) {
+            actual = actual.getSiguiente();
+        }
+        return actual.getDato();
+    }
 
+    // ACTUALIZAR
+    public boolean actualizar(T datoViejo, T datoNuevo) {
+        Nodo<T> actual = cabeza;
+        while (actual != null) {
+            if (actual.getDato().equals(datoViejo)) {
+                actual.setDato(datoNuevo);
+                return true;
+            }
+            actual = actual.getSiguiente();
+        }
+        return false;
+    }
+
+    // ELIMINAR
     public boolean eliminarPorValor(T dato) {
         if (cabeza == null) return false;
 
@@ -57,24 +81,4 @@ public class ListaSimple<T> {
     }
 
     public int getTamano() { return tamano; }
-
-    public T obtener(int indice) {
-        if (indice < 0 || indice >= tamano) return null;
-        Nodo<T> actual = cabeza;
-        for (int i = 0; i < indice; i++) {
-            actual = actual.getSiguiente();
-        }
-        return actual.getDato();
-    }
-    public boolean actualizar(T datoViejo, T datoNuevo) {
-    Nodo<T> actual = cabeza;
-    while (actual != null) {
-        if (actual.getDato().equals(datoViejo)) {
-            actual.setDato(datoNuevo);
-            return true;
-        }
-        actual = actual.getSiguiente();
-    }
-    return false;
-}
 }
