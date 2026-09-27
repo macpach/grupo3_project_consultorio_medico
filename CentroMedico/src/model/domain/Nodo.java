@@ -1,7 +1,7 @@
 package model.domain;
 package model.structures;
 
-public class Nodo {
+public class Nodo<T> {
 private T dato;
     private Nodo<T> siguiente;
 
