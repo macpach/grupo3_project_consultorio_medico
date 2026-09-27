@@ -1,5 +1,9 @@
 import model.domain.*;
 import java.time.LocalDate;
+import model.domain.Medico;
+import model.domain.Paciente;
+import model.domain.Consultorio;
+import model.domain.Menu;
 
 public class App {
     public static void main(String[] args) {
@@ -27,6 +31,10 @@ public class App {
         } catch (IllegalArgumentException e) {
             System.out.println("Excepción capturada: " + e.getMessage());
         }
+        
+        Consultorio service = new Consultorio(paciente);
+        Menu menu = new Menu(service);
+        menu.iniciar();
 
 }
 }
