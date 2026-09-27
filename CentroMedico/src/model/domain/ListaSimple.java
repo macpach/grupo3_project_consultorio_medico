@@ -66,4 +66,15 @@ public class ListaSimple<T> {
         }
         return actual.getDato();
     }
+    public boolean actualizar(T datoViejo, T datoNuevo) {
+    Nodo<T> actual = cabeza;
+    while (actual != null) {
+        if (actual.getDato().equals(datoViejo)) {
+            actual.setDato(datoNuevo);
+            return true;
+        }
+        actual = actual.getSiguiente();
+    }
+    return false;
+}
 }
