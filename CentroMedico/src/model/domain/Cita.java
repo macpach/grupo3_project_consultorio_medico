@@ -1,6 +1,7 @@
 package model.domain;
 
 import java.time.LocalDate;
+
 public class Cita {
 
     private LocalDate fecha;
@@ -57,5 +58,4 @@ public class Cita {
     public void setMedico(Medico medico) {
         this.medico = medico;
     }
-
 }

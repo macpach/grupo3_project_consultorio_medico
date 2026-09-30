@@ -1,7 +1,5 @@
 package model.service;
-
 import java.time.LocalDate;
-
 import model.domain.Cita;
 import model.domain.Consulta;
 import model.domain.Medico;
@@ -14,8 +12,6 @@ public class Consultorio {
     public Consultorio(Paciente paciente) {
         this.pacienteActual = paciente;
     }
-
-    // --- Operaciones para Citas (CRUD Completo) ---
     
     public void agregarCita(Cita cita) {
         pacienteActual.getCitas().insertarFinal(cita);
@@ -42,7 +38,6 @@ public class Consultorio {
         return false;
     }
 
-    // --- Operaciones para Consultas ---
     public void agregarConsulta(String motivo, String diagnostico, String tratamiento, LocalDate fecha) {
         Consulta nueva = new Consulta(motivo, diagnostico, tratamiento, fecha);
         pacienteActual.getHistorialConsultas().insertarFinal(nueva);
