@@ -1,6 +1,6 @@
 package model.domain;
-
 import java.time.LocalDate;
+import model.domain.structures.ListaSimple;
 
 public class Paciente extends Persona {
 

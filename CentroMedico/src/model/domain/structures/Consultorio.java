@@ -1,6 +1,11 @@
-package model.domain;
+package model.domain.structures;
 
 import java.time.LocalDate;
+
+import model.domain.Cita;
+import model.domain.Consulta;
+import model.domain.Medico;
+import model.domain.Paciente;
 
 public class Consultorio {
     private Paciente pacienteActual;
@@ -44,5 +49,21 @@ public class Consultorio {
 
     public ListaSimple<Consulta> listarConsultas() {
         return pacienteActual.getHistorialConsultas();
+    }
+    public boolean actualizarConsulta(int indice, String nuevoMotivo, String nuevoDiagnostico, String nuevoTratamiento) {
+        Consulta consultaVieja = pacienteActual.getHistorialConsultas().obtener(indice);
+        if (consultaVieja != null) {
+            Consulta consultaNueva = new Consulta(nuevoMotivo, nuevoDiagnostico, nuevoTratamiento, LocalDate.now());
+            return pacienteActual.getHistorialConsultas().actualizar(consultaVieja, consultaNueva);
+        }
+        return false;
+    }
+
+    public boolean eliminarConsulta(int indice) {
+        Consulta consultaAEliminar = pacienteActual.getHistorialConsultas().obtener(indice);
+        if (consultaAEliminar != null) {
+            return pacienteActual.getHistorialConsultas().eliminarPorValor(consultaAEliminar);
+        }
+        return false;
     }
 }

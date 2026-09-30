@@ -2,6 +2,7 @@ package model.domain;
 
 import java.time.LocalDate;
 import java.util.Scanner;
+import model.domain.structures.Consultorio;
 
 public class Menu {
     private Consultorio service;
@@ -9,9 +10,43 @@ public class Menu {
     private Medico medicoMock; 
 
     public Menu(Consultorio service) {
-        this.service = service;
+        Paciente paciente = menuPaciente();     
+        this.service = new Consultorio(paciente);
         this.scanner = new Scanner(System.in);
-        this.medicoMock = new Medico("43210987", "Dra. María", "3109876543", "General", "RM-123");
+        this.medicoMock = menuMedico();
+    }
+
+    public Paciente menuMedico() {
+        // TO-do: Adaptar el metodo para crear un medico
+        System.out.println("Antes de continuar debe registrar un medico");
+        System.out.println("Ingrese la identificacion del paciente: ");
+        String identificacionPaciente = scanner.nextLine();
+        System.out.println("Ingrese el nombre del paciente: ");
+        String nombrePaciente = scanner.nextLine();
+        System.out.println("Ingrese el telefono del paciente: ");
+        String telefonoPaciente = scanner.nextLine();
+        System.out.println("Ingrese la edad del paciente: ");
+        int edadPaciente = Integer.parseInt(scanner.nextLine());
+        System.out.println("Ingrese la eps del paciente: ");
+        String epsPaciente = scanner.nextLine();
+        Medico medico = new Medico(identificacionPaciente, nombrePaciente, telefonoPaciente, edadPaciente, epsPaciente);
+        return medico;
+    }
+
+    public Paciente menuPaciente() {
+        System.out.println("Antes de continuar debe registrar un paciente");
+        System.out.println("Ingrese la identificacion del paciente: ");
+        String identificacionPaciente = scanner.nextLine();
+        System.out.println("Ingrese el nombre del paciente: ");
+        String nombrePaciente = scanner.nextLine();
+        System.out.println("Ingrese el telefono del paciente: ");
+        String telefonoPaciente = scanner.nextLine();
+        System.out.println("Ingrese la edad del paciente: ");
+        int edadPaciente = Integer.parseInt(scanner.nextLine());
+        System.out.println("Ingrese la eps del paciente: ");
+        String epsPaciente = scanner.nextLine();
+        Paciente paciente = new Paciente(identificacionPaciente, nombrePaciente, telefonoPaciente, edadPaciente, epsPaciente);
+        return paciente;
     }
 
     public void iniciar() {
@@ -24,6 +59,8 @@ public class Menu {
             System.out.println("4. Eliminar Cita");
             System.out.println("5. Agregar Consulta");
             System.out.println("6. Listar Consultas");
+            System.out.println("7. Actualizar Consulta");
+            System.out.println("8. Eliminar Consulta");
             System.out.println("0. Salir");
             System.out.print("Seleccione una opción: ");
             
@@ -86,14 +123,37 @@ public class Menu {
                     System.out.println("Consulta registrada con éxito.");
                     break;
                 case 6:
-                    System.out.println("--- Lista de Consultas ---");
-                    int tamanoConsultas = service.listarConsultas().getTamano();
-                    if (tamanoConsultas == 0) {
-                        System.out.println("No hay consultas registradas.");
-                    } else {
-                        for (int i = 0; i < tamanoConsultas; i++) {
-                            Consulta c = service.listarConsultas().obtener(i);
-                            System.out.println((i + 1) + ". Motivo: " + c.getMotivo() + " | Diagnóstico: " + c.getDiagnostico());
+                    mostrarConsultas();
+                    break;
+                case 7:
+                    mostrarConsultas();
+                    if (service.listarConsultas().getTamano() > 0) {
+                        System.out.print("Ingrese el número de la consulta a actualizar: ");
+                        int indiceActualizarCons = Integer.parseInt(scanner.nextLine()) - 1;
+                        System.out.print("Nuevo motivo: ");
+                        String nuevoMotivoCons = scanner.nextLine();
+                        System.out.print("Nuevo diagnóstico: ");
+                        String nuevoDiag = scanner.nextLine();
+                        System.out.print("Nuevo tratamiento: ");
+                        String nuevoTrat = scanner.nextLine();
+                        
+                        if (service.actualizarConsulta(indiceActualizarCons, nuevoMotivoCons, nuevoDiag, nuevoTrat)) {
+                            System.out.println("Consulta actualizada exitosamente.");
+                        } else {
+                            System.out.println("Error: No se encontró la consulta.");
+                        }
+                    }
+                    break;
+                case 8:
+                    mostrarConsultas();
+                    if (service.listarConsultas().getTamano() > 0) {
+                        System.out.print("Ingrese el número de la consulta a eliminar: ");
+                        int indiceEliminarCons = Integer.parseInt(scanner.nextLine()) - 1;
+                        
+                        if (service.eliminarConsulta(indiceEliminarCons)) {
+                            System.out.println("Consulta eliminada exitosamente.");
+                        } else {
+                            System.out.println("Error: No se pudo eliminar la consulta.");
                         }
                     }
                     break;
@@ -106,9 +166,8 @@ public class Menu {
         }
     }
 
-    // Método de ayuda para no repetir el código de imprimir citas
     private void mostrarCitas() {
-        System.out.println("--- Lista de Citas ---");
+        System.out.println("\n--- Lista de Citas ---");
         int tamanoCitas = service.listarCitas().getTamano();
         if (tamanoCitas == 0) {
             System.out.println("No hay citas registradas.");
@@ -116,6 +175,19 @@ public class Menu {
             for (int i = 0; i < tamanoCitas; i++) {
                 Cita c = service.listarCitas().obtener(i);
                 System.out.println((i + 1) + ". Hora: " + c.getHora() + " | Motivo: " + c.getMotivo());
+            }
+        }
+    }
+
+    private void mostrarConsultas() {
+        System.out.println("\n--- Lista de Consultas ---");
+        int tamanoConsultas = service.listarConsultas().getTamano();
+        if (tamanoConsultas == 0) {
+            System.out.println("No hay consultas registradas.");
+        } else {
+            for (int i = 0; i < tamanoConsultas; i++) {
+                Consulta c = service.listarConsultas().obtener(i);
+                System.out.println((i + 1) + ". Motivo: " + c.getMotivo() + " | Diagnóstico: " + c.getDiagnostico());
             }
         }
     }
