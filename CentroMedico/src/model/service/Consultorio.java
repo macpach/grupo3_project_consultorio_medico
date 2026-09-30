@@ -1,4 +1,4 @@
-package model.domain.structures;
+package model.service;
 
 import java.time.LocalDate;
 
@@ -6,6 +6,7 @@ import model.domain.Cita;
 import model.domain.Consulta;
 import model.domain.Medico;
 import model.domain.Paciente;
+import model.structures.ListaSimple;
 
 public class Consultorio {
     private Paciente pacienteActual;

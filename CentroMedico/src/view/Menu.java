@@ -1,48 +1,40 @@
-package model.domain;
+package view;
 
 import java.time.LocalDate;
-import java.util.Scanner;
-import model.domain.structures.Consultorio;
+import utils.ConsoleUtils; 
+import model.domain.Cita;
+import model.domain.Consulta;
+import model.domain.Medico;
+import model.domain.Paciente;
+import model.service.Consultorio;
 
 public class Menu {
     private Consultorio service;
-    private Scanner scanner;
     private Medico medicoMock; 
 
     public Menu() {
-    this.scanner = new Scanner(System.in); 
-    Paciente paciente = menuPaciente();     
-    this.service = new Consultorio(paciente);
-    this.medicoMock = menuMedico();
+        Paciente paciente = menuPaciente();     
+        this.service = new Consultorio(paciente);
+        this.medicoMock = menuMedico();
     }
 
     public Medico menuMedico() {
         System.out.println("===========Antes de continuar debe registrar un medico===========");
-        System.out.print("Ingrese la identificacion del medico: ");
-        String identificacionMedico = scanner.nextLine();
-        System.out.print("Ingrese el nombre del medico: ");
-        String nombreMedico = scanner.nextLine();
-        System.out.print("Ingrese el telefono del medico: ");
-        String telefonoMedico = scanner.nextLine();
-        System.out.print("Ingrese la especialidad del medico (especialidad en numero): ");
-        String especialidadMedico = scanner.nextLine();
-        System.out.print("Ingrese el registro del medico: ");
-        String numeroRegistroMedico = scanner.nextLine();
+        String identificacionMedico = ConsoleUtils.leerTexto("Ingrese la identificacion del medico: ");
+        String nombreMedico = ConsoleUtils.leerTexto("Ingrese el nombre del medico: ");
+        String telefonoMedico = ConsoleUtils.leerTexto("Ingrese el telefono del medico: ");
+        String especialidadMedico = ConsoleUtils.leerTexto("Ingrese la especialidad del medico (especialidad en numero): ");
+        String numeroRegistroMedico = ConsoleUtils.leerTexto("Ingrese el registro del medico: ");
         return new Medico(identificacionMedico, nombreMedico, telefonoMedico, especialidadMedico, numeroRegistroMedico);
     }
 
     public Paciente menuPaciente() {
         System.out.println("===========Antes de continuar debe registrar un paciente===========");
-        System.out.print("Ingrese la identificacion del paciente: ");
-        String identificacionPaciente = scanner.nextLine();
-        System.out.print("Ingrese el nombre del paciente: ");
-        String nombrePaciente = scanner.nextLine();
-        System.out.print("Ingrese el telefono del paciente: ");
-        String telefonoPaciente = scanner.nextLine();
-        System.out.print("Ingrese la edad del paciente: ");
-        int edadPaciente = Integer.parseInt(scanner.nextLine());
-        System.out.print("Ingrese la eps del paciente: ");
-        String epsPaciente = scanner.nextLine();
+        String identificacionPaciente = ConsoleUtils.leerTexto("Ingrese la identificacion del paciente: ");
+        String nombrePaciente = ConsoleUtils.leerTexto("Ingrese el nombre del paciente: ");
+        String telefonoPaciente = ConsoleUtils.leerTexto("Ingrese el telefono del paciente: ");
+        int edadPaciente = ConsoleUtils.leerEntero("Ingrese la edad del paciente: ");
+        String epsPaciente = ConsoleUtils.leerTexto("Ingrese la eps del paciente: ");
         return new Paciente(identificacionPaciente, nombrePaciente, telefonoPaciente, edadPaciente, epsPaciente);
     }
 
@@ -53,13 +45,8 @@ public class Menu {
             System.out.println("1. Ingresar como Paciente (Gestión de Citas)");
             System.out.println("2. Ingresar como Médico (Gestión de Consultas)");
             System.out.println("0. Salir");
-            System.out.print("Seleccione un rol: ");
             
-            try { 
-                opcion = Integer.parseInt(scanner.nextLine()); 
-            } catch (NumberFormatException e) { 
-                opcion = -1; 
-            }
+            opcion = ConsoleUtils.leerEntero("Seleccione un rol: "); 
 
             switch (opcion) {
                 case 1:
@@ -86,20 +73,13 @@ public class Menu {
             System.out.println("3. Actualizar Cita");
             System.out.println("4. Eliminar Cita");
             System.out.println("0. Volver al Menú Principal");
-            System.out.print("Seleccione una opción: ");
-
-            try { 
-                opcion = Integer.parseInt(scanner.nextLine()); 
-            } catch (NumberFormatException e) { 
-                opcion = -1; 
-            }
+            
+            opcion = ConsoleUtils.leerEntero("Seleccione una opción: ");
 
             switch (opcion) {
                 case 1:
-                    System.out.print("Hora de la cita (Ej. 10:00 AM): ");
-                    String hora = scanner.nextLine();
-                    System.out.print("Motivo: ");
-                    String motivo = scanner.nextLine();
+                    String hora = ConsoleUtils.leerTexto("Hora de la cita (Ej. 10:00 AM): ");
+                    String motivo = ConsoleUtils.leerTexto("Motivo: ");
                     service.agregarCita(new Cita(LocalDate.now(), hora, motivo, null, medicoMock));
                     System.out.println("Cita agregada con éxito.");
                     break;
@@ -109,12 +89,9 @@ public class Menu {
                 case 3:
                     mostrarCitas();
                     if (service.listarCitas().getTamano() > 0) {
-                        System.out.print("Ingrese el número de la cita a actualizar: ");
-                        int indiceActualizar = Integer.parseInt(scanner.nextLine()) - 1;
-                        System.out.print("Nueva hora (Ej. 11:30 AM): ");
-                        String nuevaHora = scanner.nextLine();
-                        System.out.print("Nuevo motivo: ");
-                        String nuevoMotivo = scanner.nextLine();
+                        int indiceActualizar = ConsoleUtils.leerEntero("Ingrese el número de la cita a actualizar: ") - 1;
+                        String nuevaHora = ConsoleUtils.leerTexto("Nueva hora (Ej. 11:30 AM): ");
+                        String nuevoMotivo = ConsoleUtils.leerTexto("Nuevo motivo: ");
                         
                         if (service.actualizarCita(indiceActualizar, nuevaHora, nuevoMotivo, medicoMock)) {
                             System.out.println("Cita actualizada exitosamente.");
@@ -126,8 +103,7 @@ public class Menu {
                 case 4:
                     mostrarCitas();
                     if (service.listarCitas().getTamano() > 0) {
-                        System.out.print("Ingrese el número de la cita a eliminar: ");
-                        int indiceEliminar = Integer.parseInt(scanner.nextLine()) - 1;
+                        int indiceEliminar = ConsoleUtils.leerEntero("Ingrese el número de la cita a eliminar: ") - 1;
                         
                         if (service.eliminarCita(indiceEliminar)) {
                             System.out.println("Cita eliminada exitosamente.");
@@ -154,22 +130,14 @@ public class Menu {
             System.out.println("3. Actualizar Consulta");
             System.out.println("4. Eliminar Consulta");
             System.out.println("0. Volver al Menú Principal");
-            System.out.print("Seleccione una opción: ");
-
-            try { 
-                opcion = Integer.parseInt(scanner.nextLine()); 
-            } catch (NumberFormatException e) { 
-                opcion = -1; 
-            }
+            
+            opcion = ConsoleUtils.leerEntero("Seleccione una opción: ");
 
             switch (opcion) {
                 case 1:
-                    System.out.print("Motivo de consulta: ");
-                    String motivoCons = scanner.nextLine();
-                    System.out.print("Diagnóstico: ");
-                    String diag = scanner.nextLine();
-                    System.out.print("Tratamiento: ");
-                    String trat = scanner.nextLine();
+                    String motivoCons = ConsoleUtils.leerTexto("Motivo de consulta: ");
+                    String diag = ConsoleUtils.leerTexto("Diagnóstico: ");
+                    String trat = ConsoleUtils.leerTexto("Tratamiento: ");
                     service.agregarConsulta(motivoCons, diag, trat, LocalDate.now());
                     System.out.println("Consulta registrada con éxito.");
                     break;
@@ -179,14 +147,10 @@ public class Menu {
                 case 3:
                     mostrarConsultas();
                     if (service.listarConsultas().getTamano() > 0) {
-                        System.out.print("Ingrese el número de la consulta a actualizar: ");
-                        int indiceActualizarCons = Integer.parseInt(scanner.nextLine()) - 1;
-                        System.out.print("Nuevo motivo: ");
-                        String nuevoMotivoCons = scanner.nextLine();
-                        System.out.print("Nuevo diagnóstico: ");
-                        String nuevoDiag = scanner.nextLine();
-                        System.out.print("Nuevo tratamiento: ");
-                        String nuevoTrat = scanner.nextLine();
+                        int indiceActualizarCons = ConsoleUtils.leerEntero("Ingrese el número de la consulta a actualizar: ") - 1;
+                        String nuevoMotivoCons = ConsoleUtils.leerTexto("Nuevo motivo: ");
+                        String nuevoDiag = ConsoleUtils.leerTexto("Nuevo diagnóstico: ");
+                        String nuevoTrat = ConsoleUtils.leerTexto("Nuevo tratamiento: ");
                         
                         if (service.actualizarConsulta(indiceActualizarCons, nuevoMotivoCons, nuevoDiag, nuevoTrat)) {
                             System.out.println("Consulta actualizada exitosamente.");
@@ -198,8 +162,7 @@ public class Menu {
                 case 4:
                     mostrarConsultas();
                     if (service.listarConsultas().getTamano() > 0) {
-                        System.out.print("Ingrese el número de la consulta a eliminar: ");
-                        int indiceEliminarCons = Integer.parseInt(scanner.nextLine()) - 1;
+                        int indiceEliminarCons = ConsoleUtils.leerEntero("Ingrese el número de la consulta a eliminar: ") - 1;
                         
                         if (service.eliminarConsulta(indiceEliminarCons)) {
                             System.out.println("Consulta eliminada exitosamente.");

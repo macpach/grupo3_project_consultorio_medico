@@ -1,4 +1,4 @@
-package model.domain.structures;
+package model.structures;
 
 public class ListaSimple<T> {
     private Nodo<T> cabeza;
