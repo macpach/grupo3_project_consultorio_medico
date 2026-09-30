@@ -9,61 +9,85 @@ public class Menu {
     private Scanner scanner;
     private Medico medicoMock; 
 
-    public Menu(Consultorio service) {
-        Paciente paciente = menuPaciente();     
-        this.service = new Consultorio(paciente);
-        this.scanner = new Scanner(System.in);
-        this.medicoMock = menuMedico();
+    public Menu() {
+    this.scanner = new Scanner(System.in); 
+    Paciente paciente = menuPaciente();     
+    this.service = new Consultorio(paciente);
+    this.medicoMock = menuMedico();
     }
 
-    public Paciente menuMedico() {
-        // TO-do: Adaptar el metodo para crear un medico
-        System.out.println("Antes de continuar debe registrar un medico");
-        System.out.println("Ingrese la identificacion del paciente: ");
-        String identificacionPaciente = scanner.nextLine();
-        System.out.println("Ingrese el nombre del paciente: ");
-        String nombrePaciente = scanner.nextLine();
-        System.out.println("Ingrese el telefono del paciente: ");
-        String telefonoPaciente = scanner.nextLine();
-        System.out.println("Ingrese la edad del paciente: ");
-        int edadPaciente = Integer.parseInt(scanner.nextLine());
-        System.out.println("Ingrese la eps del paciente: ");
-        String epsPaciente = scanner.nextLine();
-        Medico medico = new Medico(identificacionPaciente, nombrePaciente, telefonoPaciente, edadPaciente, epsPaciente);
-        return medico;
+    public Medico menuMedico() {
+        System.out.println("===========Antes de continuar debe registrar un medico===========");
+        System.out.print("Ingrese la identificacion del medico: ");
+        String identificacionMedico = scanner.nextLine();
+        System.out.print("Ingrese el nombre del medico: ");
+        String nombreMedico = scanner.nextLine();
+        System.out.print("Ingrese el telefono del medico: ");
+        String telefonoMedico = scanner.nextLine();
+        System.out.print("Ingrese la especialidad del medico (especialidad en numero): ");
+        String especialidadMedico = scanner.nextLine();
+        System.out.print("Ingrese el registro del medico: ");
+        String numeroRegistroMedico = scanner.nextLine();
+        return new Medico(identificacionMedico, nombreMedico, telefonoMedico, especialidadMedico, numeroRegistroMedico);
     }
 
     public Paciente menuPaciente() {
-        System.out.println("Antes de continuar debe registrar un paciente");
-        System.out.println("Ingrese la identificacion del paciente: ");
+        System.out.println("===========Antes de continuar debe registrar un paciente===========");
+        System.out.print("Ingrese la identificacion del paciente: ");
         String identificacionPaciente = scanner.nextLine();
-        System.out.println("Ingrese el nombre del paciente: ");
+        System.out.print("Ingrese el nombre del paciente: ");
         String nombrePaciente = scanner.nextLine();
-        System.out.println("Ingrese el telefono del paciente: ");
+        System.out.print("Ingrese el telefono del paciente: ");
         String telefonoPaciente = scanner.nextLine();
-        System.out.println("Ingrese la edad del paciente: ");
+        System.out.print("Ingrese la edad del paciente: ");
         int edadPaciente = Integer.parseInt(scanner.nextLine());
-        System.out.println("Ingrese la eps del paciente: ");
+        System.out.print("Ingrese la eps del paciente: ");
         String epsPaciente = scanner.nextLine();
-        Paciente paciente = new Paciente(identificacionPaciente, nombrePaciente, telefonoPaciente, edadPaciente, epsPaciente);
-        return paciente;
+        return new Paciente(identificacionPaciente, nombrePaciente, telefonoPaciente, edadPaciente, epsPaciente);
     }
 
     public void iniciar() {
         int opcion = -1;
         while (opcion != 0) {
-            System.out.println("\n--- MENÚ CONSULTORIO MÉDICO ---");
+            System.out.println("\n--- MENÚ PRINCIPAL ---");
+            System.out.println("1. Ingresar como Paciente (Gestión de Citas)");
+            System.out.println("2. Ingresar como Médico (Gestión de Consultas)");
+            System.out.println("0. Salir");
+            System.out.print("Seleccione un rol: ");
+            
+            try { 
+                opcion = Integer.parseInt(scanner.nextLine()); 
+            } catch (NumberFormatException e) { 
+                opcion = -1; 
+            }
+
+            switch (opcion) {
+                case 1:
+                    submenuPaciente();
+                    break;
+                case 2:
+                    submenuMedico();
+                    break;
+                case 0:
+                    System.out.println("Saliendo del sistema...");
+                    break;
+                default:
+                    System.out.println("Opción inválida. Intente de nuevo.");
+            }
+        }
+    }
+
+    private void submenuPaciente() {
+        int opcion = -1;
+        while (opcion != 0) {
+            System.out.println("\n--- MENÚ PACIENTE (CITAS) ---");
             System.out.println("1. Agregar Cita");
             System.out.println("2. Listar Citas");
             System.out.println("3. Actualizar Cita");
             System.out.println("4. Eliminar Cita");
-            System.out.println("5. Agregar Consulta");
-            System.out.println("6. Listar Consultas");
-            System.out.println("7. Actualizar Consulta");
-            System.out.println("8. Eliminar Consulta");
-            System.out.println("0. Salir");
+            System.out.println("0. Volver al Menú Principal");
             System.out.print("Seleccione una opción: ");
-            
+
             try { 
                 opcion = Integer.parseInt(scanner.nextLine()); 
             } catch (NumberFormatException e) { 
@@ -112,7 +136,34 @@ public class Menu {
                         }
                     }
                     break;
-                case 5:
+                case 0:
+                    System.out.println("Regresando al menú principal...");
+                    break;
+                default:
+                    System.out.println("Opción inválida.");
+            }
+        }
+    }
+
+    private void submenuMedico() {
+        int opcion = -1;
+        while (opcion != 0) {
+            System.out.println("\n--- MENÚ MÉDICO (CONSULTAS) ---");
+            System.out.println("1. Agregar Consulta");
+            System.out.println("2. Listar Consultas");
+            System.out.println("3. Actualizar Consulta");
+            System.out.println("4. Eliminar Consulta");
+            System.out.println("0. Volver al Menú Principal");
+            System.out.print("Seleccione una opción: ");
+
+            try { 
+                opcion = Integer.parseInt(scanner.nextLine()); 
+            } catch (NumberFormatException e) { 
+                opcion = -1; 
+            }
+
+            switch (opcion) {
+                case 1:
                     System.out.print("Motivo de consulta: ");
                     String motivoCons = scanner.nextLine();
                     System.out.print("Diagnóstico: ");
@@ -122,10 +173,10 @@ public class Menu {
                     service.agregarConsulta(motivoCons, diag, trat, LocalDate.now());
                     System.out.println("Consulta registrada con éxito.");
                     break;
-                case 6:
+                case 2:
                     mostrarConsultas();
                     break;
-                case 7:
+                case 3:
                     mostrarConsultas();
                     if (service.listarConsultas().getTamano() > 0) {
                         System.out.print("Ingrese el número de la consulta a actualizar: ");
@@ -144,7 +195,7 @@ public class Menu {
                         }
                     }
                     break;
-                case 8:
+                case 4:
                     mostrarConsultas();
                     if (service.listarConsultas().getTamano() > 0) {
                         System.out.print("Ingrese el número de la consulta a eliminar: ");
@@ -158,7 +209,7 @@ public class Menu {
                     }
                     break;
                 case 0:
-                    System.out.println("Saliendo del sistema...");
+                    System.out.println("Regresando al menú principal...");
                     break;
                 default:
                     System.out.println("Opción inválida.");
