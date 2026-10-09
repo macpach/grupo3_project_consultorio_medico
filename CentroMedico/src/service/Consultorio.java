@@ -1,4 +1,4 @@
-package model.service;
+package service;
 import java.time.LocalDate;
 import model.domain.Cita;
 import model.domain.Consulta;
