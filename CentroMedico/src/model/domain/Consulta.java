@@ -1,24 +1,35 @@
 package model.domain;
 
+import java.security.KeyStore.LoadStoreParameter;
 import java.time.LocalDate;
 
 public class Consulta {
-
+    
     private String motivo;
     private String diagnostico;
     private String tratamiento;
     private LocalDate fecha;
+    private Paciente paciente;
 
-    public Consulta(String motivo, String diagnostico, String tratamiento, LocalDate fecha) {
+    public Consulta(String motivo, String diagnostico, String tratamiento, Paciente paciente) {
         this.motivo = motivo;
         this.diagnostico = diagnostico;
         this.tratamiento = tratamiento;
-        this.fecha = fecha;
+        this.fecha = LocalDate.now();
+        this.paciente = paciente;
     }
 
     // Getters y Setters
     public String getMotivo() {
         return motivo;
+    }
+
+    public Paciente getPaciente() {
+        return paciente;
+    }
+
+    public void setPaciente(Paciente paciente) {
+        this.paciente = paciente;
     }
 
     public void setMotivo(String motivo) {
