@@ -6,7 +6,7 @@ import model.domain.Cita;
 import model.domain.Consulta;
 import model.domain.Medico;
 import model.domain.Paciente;
-import model.service.Consultorio;
+import service.Consultorio;
 
 public class Menu {
     private Consultorio service;
