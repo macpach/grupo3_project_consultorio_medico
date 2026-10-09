@@ -1,6 +1,7 @@
 package view;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import utils.ConsoleUtils; 
 import model.domain.Cita;
 import model.domain.Consulta;
@@ -129,6 +130,7 @@ public class Menu {
             System.out.println("2. Listar Consultas");
             System.out.println("3. Actualizar Consulta");
             System.out.println("4. Eliminar Consulta");
+            System.out.println("5. Buscar Consulta por Fecha"); // NUEVA OPCIÓN
             System.out.println("0. Volver al Menú Principal");
             
             opcion = ConsoleUtils.leerEntero("Seleccione una opción: ");
@@ -138,7 +140,7 @@ public class Menu {
                     String motivoCons = ConsoleUtils.leerTexto("Motivo de consulta: ");
                     String diag = ConsoleUtils.leerTexto("Diagnóstico: ");
                     String trat = ConsoleUtils.leerTexto("Tratamiento: ");
-                    service.agregarConsulta(motivoCons, diag, trat, LocalDate.now());
+                    service.agregarConsulta(motivoCons, diag, trat,LocalDate.now());
                     System.out.println("Consulta registrada con éxito.");
                     break;
                 case 2:
@@ -169,6 +171,21 @@ public class Menu {
                         } else {
                             System.out.println("Error: No se pudo eliminar la consulta.");
                         }
+                    }
+                    break;
+                case 5: 
+                    LocalDate fechaHoy = LocalDate.now();
+                    System.out.println("\n--- Buscando consultas de hoy (" + fechaHoy + ") ---");
+                    
+                    Consulta consultaEncontrada = service.buscarFecha(fechaHoy);
+                    
+                    if (consultaEncontrada != null) {
+                        System.out.println("¡Consulta Encontrada!");
+                        System.out.println("Motivo: " + consultaEncontrada.getMotivo());
+                        System.out.println("Diagnóstico: " + consultaEncontrada.getDiagnostico());
+                        System.out.println("Tratamiento: " + consultaEncontrada.getTratamiento());
+                    } else {
+                        System.out.println("No se encontraron consultas registradas el día de hoy.");
                     }
                     break;
                 case 0:
