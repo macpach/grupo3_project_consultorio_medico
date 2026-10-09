@@ -48,5 +48,4 @@ public class Consulta {
     public void setFecha(LocalDate fecha) {
         this.fecha = fecha;
     }
-
 }

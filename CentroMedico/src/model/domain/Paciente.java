@@ -1,6 +1,6 @@
 package model.domain;
-import java.time.LocalDate;
 
+import java.time.LocalDate;
 import model.structures.ListaSimple;
 
 public class Paciente extends Persona {
@@ -55,5 +55,4 @@ public class Paciente extends Persona {
     public ListaSimple<Cita> getCitas() {
         return citas;
     }
-
 }

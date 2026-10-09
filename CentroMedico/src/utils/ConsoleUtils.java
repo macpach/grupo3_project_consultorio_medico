@@ -20,7 +20,7 @@ public class ConsoleUtils {
             scanner.next(); // Limpiar el buffer
         }
         int numero = scanner.nextInt();
-        scanner.nextLine(); // Limpiar el salto de línea que queda después del número
+        scanner.nextLine();
         return numero;
     }
 }
