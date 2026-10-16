@@ -1,11 +1,13 @@
 package service;
 
 import java.time.LocalDate;
+
 import model.domain.Cita;
 import model.domain.Consulta;
 import model.domain.Medico;
 import model.domain.Paciente;
 import model.structures.ListaSimple;
+import model.structures.Pila;
 
 public class Consultorio {
     private Paciente pacienteActual;
@@ -13,7 +15,9 @@ public class Consultorio {
     public Consultorio(Paciente paciente) {
         this.pacienteActual = paciente;
     }
-    
+
+    // --- Operaciones para Citas (CRUD Completo) ---
+
     public void agregarCita(Cita cita) {
         pacienteActual.getCitas().insertarFinal(cita);
     }
@@ -39,44 +43,60 @@ public class Consultorio {
         return false;
     }
 
-    public void agregarConsulta(String motivo, String diagnostico, String tratamiento, LocalDate fecha) {
-        Consulta nueva = new Consulta(motivo, diagnostico, tratamiento,pacienteActual);
-        pacienteActual.getHistorialConsultas().insertarFinal(nueva);
+    // --- Operaciones para Consultas (una por operación del TAD Pila) ---
+
+    // push → no devuelve nada
+    public void registrarConsulta(String motivo, String diagnostico, String tratamiento, LocalDate fecha) {
+        Consulta nueva = new Consulta(motivo, diagnostico, tratamiento, fecha);
+        pacienteActual.getHistorialConsultas().push(nueva);
     }
 
-    public ListaSimple<Consulta> listarConsultas() {
-        return pacienteActual.getHistorialConsultas();
-    }
-    public boolean actualizarConsulta(int indice, String nuevoMotivo, String nuevoDiagnostico, String nuevoTratamiento) {
-        Consulta consultaVieja = pacienteActual.getHistorialConsultas().obtener(indice);
-        if (consultaVieja != null) {
-            Consulta consultaNueva = new Consulta(nuevoMotivo, nuevoDiagnostico, nuevoTratamiento, pacienteActual);
-            return pacienteActual.getHistorialConsultas().actualizar(consultaVieja, consultaNueva);
-        }
-        return false;
+    // pop → devuelve la consulta retirada
+    public Consulta retirarUltimaConsulta() {
+        return pacienteActual.getHistorialConsultas().pop();
     }
 
-    public boolean eliminarConsulta(int indice) {
-        Consulta consultaAEliminar = pacienteActual.getHistorialConsultas().obtener(indice);
-        if (consultaAEliminar != null) {
-            return pacienteActual.getHistorialConsultas().eliminarPorValor(consultaAEliminar);
-        }
-        return false;
+    // peek → devuelve la última consulta, sin retirarla
+    public Consulta consultarUltimaConsulta() {
+        return pacienteActual.getHistorialConsultas().peek();
     }
-    
-    public Consulta buscarFecha(LocalDate Fecha){
 
-        ListaSimple<Consulta> historial = pacienteActual.getHistorialConsultas();
-        
-        
-        for (int i = 0; i < historial.getTamano(); i++) {
-            Consulta consultaActual = historial.obtener(i);
-            
-        
-            if (consultaActual != null && consultaActual.getFecha().equals(Fecha)) {
-                return consultaActual; 
-            }
+    // isEmpty → boolean
+    public boolean sinConsultasPorRetirar() {
+        return pacienteActual.getHistorialConsultas().isEmpty();
+    }
+
+    // size → int
+    public int contarConsultas() {
+        return pacienteActual.getHistorialConsultas().size();
+    }
+
+    // sexto método (Parte 7): lista sin destruir la pila
+    public String listarConsultas() {
+        Pila<Consulta> original = pacienteActual.getHistorialConsultas();
+
+        if (original.isEmpty()) {
+            return "No hay consultas por retirar";
         }
-        return null;
+
+        Pila<Consulta> auxiliar = new Pila<>();
+        StringBuilder texto = new StringBuilder();
+        int contador = 1;
+
+        while (!original.isEmpty()) {
+            Consulta c = original.pop();
+            texto.append(contador).append(". Motivo: ").append(c.getMotivo())
+                 .append(" | Diagnóstico: ").append(c.getDiagnostico())
+                 .append(" | Tratamiento: ").append(c.getTratamiento())
+                 .append("\n");
+            auxiliar.push(c);
+            contador++;
+        }
+
+        while (!auxiliar.isEmpty()) {
+            original.push(auxiliar.pop());
+        }
+
+        return texto.toString();
     }
 }

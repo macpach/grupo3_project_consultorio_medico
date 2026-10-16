@@ -11,7 +11,7 @@ public class Consulta {
     private LocalDate fecha;
     private Paciente paciente;
 
-    public Consulta(String motivo, String diagnostico, String tratamiento, Paciente paciente) {
+    public Consulta(String motivo, String diagnostico, String tratamiento, LocalDate fecha) {
         this.motivo = motivo;
         this.diagnostico = diagnostico;
         this.tratamiento = tratamiento;

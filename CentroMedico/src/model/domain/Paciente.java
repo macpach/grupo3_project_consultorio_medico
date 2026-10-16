@@ -1,6 +1,5 @@
 package model.domain;
 import model.structures.Pila;
-
 import java.time.LocalDate;
 import model.structures.ListaSimple;
 

@@ -12,11 +12,13 @@ import service.Consultorio;
 public class Menu {
     private Consultorio service;
     private Medico medicoMock; 
+    private MenuPilaView menupila;
 
     public Menu() {
         Paciente paciente = menuPaciente();     
         this.service = new Consultorio(paciente);
         this.medicoMock = menuMedico();
+        this.menupila = new MenuPilaView(service);
     }
 
     public Medico menuMedico() {
@@ -45,6 +47,7 @@ public class Menu {
             System.out.println("\n--- MENÚ PRINCIPAL ---");
             System.out.println("1. Ingresar como Paciente (Gestión de Citas)");
             System.out.println("2. Ingresar como Médico (Gestión de Consultas)");
+            System.out.println("3. Menu De Consultas (Pila)");
             System.out.println("0. Salir");
             
             opcion = ConsoleUtils.leerEntero("Seleccione un rol: "); 
@@ -55,6 +58,9 @@ public class Menu {
                     break;
                 case 2:
                     submenuMedico();
+                    break;
+                case 3:
+                    menupila.iniciar();
                     break;
                 case 0:
                     System.out.println("Saliendo del sistema...");
@@ -123,79 +129,53 @@ public class Menu {
     }
 
     private void submenuMedico() {
-        int opcion = -1;
-        while (opcion != 0) {
-            System.out.println("\n--- MENÚ MÉDICO (CONSULTAS) ---");
-            System.out.println("1. Agregar Consulta");
-            System.out.println("2. Listar Consultas");
-            System.out.println("3. Actualizar Consulta");
-            System.out.println("4. Eliminar Consulta");
-            System.out.println("5. Buscar Consulta por Fecha"); // NUEVA OPCIÓN
-            System.out.println("0. Volver al Menú Principal");
-            
-            opcion = ConsoleUtils.leerEntero("Seleccione una opción: ");
+    int opcion = -1;
+    while (opcion != 0) {
+        System.out.println("\n--- MENÚ MÉDICO (CONSULTAS) ---");
+        System.out.println("1. Registrar Consulta");
+        System.out.println("2. Retirar Última Consulta");
+        System.out.println("3. Ver Última Consulta");
+        System.out.println("4. Contar Consultas");
+        System.out.println("0. Volver al Menú Principal");
 
-            switch (opcion) {
-                case 1:
-                    String motivoCons = ConsoleUtils.leerTexto("Motivo de consulta: ");
-                    String diag = ConsoleUtils.leerTexto("Diagnóstico: ");
-                    String trat = ConsoleUtils.leerTexto("Tratamiento: ");
-                    service.agregarConsulta(motivoCons, diag, trat,LocalDate.now());
-                    System.out.println("Consulta registrada con éxito.");
-                    break;
-                case 2:
-                    mostrarConsultas();
-                    break;
-                case 3:
-                    mostrarConsultas();
-                    if (service.listarConsultas().getTamano() > 0) {
-                        int indiceActualizarCons = ConsoleUtils.leerEntero("Ingrese el número de la consulta a actualizar: ") - 1;
-                        String nuevoMotivoCons = ConsoleUtils.leerTexto("Nuevo motivo: ");
-                        String nuevoDiag = ConsoleUtils.leerTexto("Nuevo diagnóstico: ");
-                        String nuevoTrat = ConsoleUtils.leerTexto("Nuevo tratamiento: ");
-                        
-                        if (service.actualizarConsulta(indiceActualizarCons, nuevoMotivoCons, nuevoDiag, nuevoTrat)) {
-                            System.out.println("Consulta actualizada exitosamente.");
-                        } else {
-                            System.out.println("Error: No se encontró la consulta.");
-                        }
-                    }
-                    break;
-                case 4:
-                    mostrarConsultas();
-                    if (service.listarConsultas().getTamano() > 0) {
-                        int indiceEliminarCons = ConsoleUtils.leerEntero("Ingrese el número de la consulta a eliminar: ") - 1;
-                        
-                        if (service.eliminarConsulta(indiceEliminarCons)) {
-                            System.out.println("Consulta eliminada exitosamente.");
-                        } else {
-                            System.out.println("Error: No se pudo eliminar la consulta.");
-                        }
-                    }
-                    break;
-                case 5: 
-                    LocalDate fechaHoy = LocalDate.now();
-                    System.out.println("\n--- Buscando consultas de hoy (" + fechaHoy + ") ---");
-                    
-                    Consulta consultaEncontrada = service.buscarFecha(fechaHoy);
-                    
-                    if (consultaEncontrada != null) {
-                        System.out.println("¡Consulta Encontrada!");
-                        System.out.println("Motivo: " + consultaEncontrada.getMotivo());
-                        System.out.println("Diagnóstico: " + consultaEncontrada.getDiagnostico());
-                        System.out.println("Tratamiento: " + consultaEncontrada.getTratamiento());
-                    } else {
-                        System.out.println("No se encontraron consultas registradas el día de hoy.");
-                    }
-                    break;
-                case 0:
-                    System.out.println("Regresando al menú principal...");
-                    break;
-                default:
-                    System.out.println("Opción inválida.");
-            }
+        opcion = ConsoleUtils.leerEntero("Seleccione una opción: ");
+
+        switch (opcion) {
+            case 1:
+                String motivoCons = ConsoleUtils.leerTexto("Motivo de consulta: ");
+                String diag = ConsoleUtils.leerTexto("Diagnóstico: ");
+                String trat = ConsoleUtils.leerTexto("Tratamiento: ");
+                service.registrarConsulta(motivoCons, diag, trat, LocalDate.now());
+                System.out.println("Consulta registrada con éxito.");
+                break;
+            case 2:
+                if (service.sinConsultasPorRetirar()) {
+                    System.out.println("No hay consultas por retirar.");
+                } else {
+                    Consulta retirada = service.retirarUltimaConsulta();
+                    System.out.println("Consulta retirada:");
+                    imprimirConsulta(retirada);
+                }
+                break;
+            case 3:
+                if (service.sinConsultasPorRetirar()) {
+                    System.out.println("No hay consultas registradas.");
+                } else {
+                    System.out.println("Última consulta registrada:");
+                    imprimirConsulta(service.consultarUltimaConsulta());
+                }
+                break;
+            case 4:
+                System.out.println("Consultas registradas: " + service.contarConsultas());
+                break;
+            case 0:
+                System.out.println("Regresando al menú principal...");
+                break;
+            default:
+                System.out.println("Opción inválida.");
         }
     }
+}
 
     private void mostrarCitas() {
         System.out.println("\n--- Lista de Citas ---");
@@ -210,16 +190,9 @@ public class Menu {
         }
     }
 
-    private void mostrarConsultas() {
-        System.out.println("\n--- Lista de Consultas ---");
-        int tamanoConsultas = service.listarConsultas().getTamano();
-        if (tamanoConsultas == 0) {
-            System.out.println("No hay consultas registradas.");
-        } else {
-            for (int i = 0; i < tamanoConsultas; i++) {
-                Consulta c = service.listarConsultas().obtener(i);
-                System.out.println((i + 1) + ". Motivo: " + c.getMotivo() + " | Diagnóstico: " + c.getDiagnostico());
-            }
-        }
-    }
+    private void imprimirConsulta(Consulta c) {
+    System.out.println("Motivo: " + c.getMotivo()
+            + " | Diagnóstico: " + c.getDiagnostico()
+            + " | Tratamiento: " + c.getTratamiento());
+}
 }
