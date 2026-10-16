@@ -1,6 +1,5 @@
 package model.domain;
 import model.structures.Pila;
-
 import java.time.LocalDate;
 import model.structures.ListaSimple;
 
@@ -39,11 +38,6 @@ public class Paciente extends Persona {
 
     public void setEps(String eps) {
         this.eps = eps;
-    }
-
-    public void registrarConsulta(String motivo, String diagnostico, String tratamiento, LocalDate fecha) {
-        Consulta historialConsultas = new Consulta(motivo, diagnostico, tratamiento, fecha);
-        this.historialConsultas.push(historialConsultas);
     }
 
     public Pila<Consulta> getHistorialConsultas() {
