@@ -42,7 +42,7 @@ public class Paciente extends Persona {
     }
 
     public void registrarConsulta(String motivo, String diagnostico, String tratamiento, LocalDate fecha) {
-        Consulta historialConsultas = new Consulta(motivo, diagnostico, tratamiento, fecha);
+        Consulta historialConsultas = new Consulta(motivo, diagnostico, tratamiento, this);
         this.historialConsultas.push(historialConsultas);
     }
 
