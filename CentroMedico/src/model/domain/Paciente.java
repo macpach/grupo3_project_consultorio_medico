@@ -40,6 +40,11 @@ public class Paciente extends Persona {
         this.eps = eps;
     }
 
+    public void registrarConsulta(String motivo, String diagnostico, String tratamiento, LocalDate fecha) {
+        Consulta historialConsultas = new Consulta(motivo, diagnostico, tratamiento, this);
+        this.historialConsultas.push(historialConsultas);
+    }
+
     public Pila<Consulta> getHistorialConsultas() {
         return historialConsultas;
     }
