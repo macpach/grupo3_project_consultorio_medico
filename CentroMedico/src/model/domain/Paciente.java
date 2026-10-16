@@ -1,4 +1,5 @@
 package model.domain;
+import model.structures.Pila;
 
 import java.time.LocalDate;
 import model.structures.ListaSimple;
@@ -7,14 +8,14 @@ public class Paciente extends Persona {
 
     private int edad;
     private String eps;
-    private ListaSimple<Consulta> historialConsultas;
+    private Pila<Consulta> historialConsultas;
     private ListaSimple<Cita> citas;
 
     public Paciente(String identificacion, String nombre, String telefono, int edad, String eps) {
         super(identificacion, nombre, telefono);
         this.edad = edad;
         this.eps = eps;
-        this.historialConsultas = new ListaSimple<>();
+        this.historialConsultas = new Pila<Consulta>();
         this.citas = new ListaSimple<>();
     }
 
@@ -41,10 +42,11 @@ public class Paciente extends Persona {
     }
 
     public void registrarConsulta(String motivo, String diagnostico, String tratamiento, LocalDate fecha) {
-        historialConsultas.insertarFinal(new Consulta(motivo, diagnostico, tratamiento, this));
+        Consulta historialConsultas = new Consulta(motivo, diagnostico, tratamiento, fecha);
+        this.historialConsultas.push(historialConsultas);
     }
 
-    public ListaSimple<Consulta> getHistorialConsultas() {
+    public Pila<Consulta> getHistorialConsultas() {
         return historialConsultas;
     }
 
