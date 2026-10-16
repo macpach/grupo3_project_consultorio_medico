@@ -1,8 +1,6 @@
 package service;
 
 import java.time.LocalDate;
-
-
 import model.domain.Cita;
 import model.domain.Consulta;
 import model.domain.Medico;
@@ -15,8 +13,6 @@ public class Consultorio {
     public Consultorio(Paciente paciente) {
         this.pacienteActual = paciente;
     }
-
-    // --- Operaciones para Citas (CRUD Completo) ---
     
     public void agregarCita(Cita cita) {
         pacienteActual.getCitas().insertarFinal(cita);
@@ -43,9 +39,8 @@ public class Consultorio {
         return false;
     }
 
-    // --- Operaciones para Consultas ---
     public void agregarConsulta(String motivo, String diagnostico, String tratamiento, LocalDate fecha) {
-        Consulta nueva = new Consulta(motivo, diagnostico, tratamiento, fecha);
+        Consulta nueva = new Consulta(motivo, diagnostico, tratamiento,pacienteActual);
         pacienteActual.getHistorialConsultas().insertarFinal(nueva);
     }
 
@@ -55,7 +50,7 @@ public class Consultorio {
     public boolean actualizarConsulta(int indice, String nuevoMotivo, String nuevoDiagnostico, String nuevoTratamiento) {
         Consulta consultaVieja = pacienteActual.getHistorialConsultas().obtener(indice);
         if (consultaVieja != null) {
-            Consulta consultaNueva = new Consulta(nuevoMotivo, nuevoDiagnostico, nuevoTratamiento, LocalDate.now());
+            Consulta consultaNueva = new Consulta(nuevoMotivo, nuevoDiagnostico, nuevoTratamiento, pacienteActual);
             return pacienteActual.getHistorialConsultas().actualizar(consultaVieja, consultaNueva);
         }
         return false;
@@ -67,5 +62,21 @@ public class Consultorio {
             return pacienteActual.getHistorialConsultas().eliminarPorValor(consultaAEliminar);
         }
         return false;
+    }
+    
+    public Consulta buscarFecha(LocalDate Fecha){
+
+        ListaSimple<Consulta> historial = pacienteActual.getHistorialConsultas();
+        
+        
+        for (int i = 0; i < historial.getTamano(); i++) {
+            Consulta consultaActual = historial.obtener(i);
+            
+        
+            if (consultaActual != null && consultaActual.getFecha().equals(Fecha)) {
+                return consultaActual; 
+            }
+        }
+        return null;
     }
 }
