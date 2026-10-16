@@ -40,7 +40,7 @@ public class Consultorio {
     }
 
     public void agregarConsulta(String motivo, String diagnostico, String tratamiento, LocalDate fecha) {
-        Consulta nueva = new Consulta(motivo, diagnostico, tratamiento, fecha);
+        Consulta nueva = new Consulta(motivo, diagnostico, tratamiento,pacienteActual);
         pacienteActual.getHistorialConsultas().insertarFinal(nueva);
     }
 
@@ -50,7 +50,7 @@ public class Consultorio {
     public boolean actualizarConsulta(int indice, String nuevoMotivo, String nuevoDiagnostico, String nuevoTratamiento) {
         Consulta consultaVieja = pacienteActual.getHistorialConsultas().obtener(indice);
         if (consultaVieja != null) {
-            Consulta consultaNueva = new Consulta(nuevoMotivo, nuevoDiagnostico, nuevoTratamiento, LocalDate.now());
+            Consulta consultaNueva = new Consulta(nuevoMotivo, nuevoDiagnostico, nuevoTratamiento, pacienteActual);
             return pacienteActual.getHistorialConsultas().actualizar(consultaVieja, consultaNueva);
         }
         return false;
@@ -62,5 +62,21 @@ public class Consultorio {
             return pacienteActual.getHistorialConsultas().eliminarPorValor(consultaAEliminar);
         }
         return false;
+    }
+    
+    public Consulta buscarFecha(LocalDate Fecha){
+
+        ListaSimple<Consulta> historial = pacienteActual.getHistorialConsultas();
+        
+        
+        for (int i = 0; i < historial.getTamano(); i++) {
+            Consulta consultaActual = historial.obtener(i);
+            
+        
+            if (consultaActual != null && consultaActual.getFecha().equals(Fecha)) {
+                return consultaActual; 
+            }
+        }
+        return null;
     }
 }

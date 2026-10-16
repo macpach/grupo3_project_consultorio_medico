@@ -41,7 +41,7 @@ public class Paciente extends Persona {
     }
 
     public void registrarConsulta(String motivo, String diagnostico, String tratamiento, LocalDate fecha) {
-        historialConsultas.insertarFinal(new Consulta(motivo, diagnostico, tratamiento, fecha));
+        historialConsultas.insertarFinal(new Consulta(motivo, diagnostico, tratamiento, this));
     }
 
     public ListaSimple<Consulta> getHistorialConsultas() {
