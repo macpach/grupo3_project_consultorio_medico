@@ -1,26 +1,27 @@
 package view;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeParseException;
-import utils.ConsoleUtils; 
 import model.domain.Cita;
 import model.domain.Consulta;
 import model.domain.Medico;
 import model.domain.Paciente;
 import service.Consultorio;
+import service.ConsultorioPila; 
+import utils.ConsoleUtils; 
 
-public class Menu {
-    private Consultorio service;
-    private Medico medicoMock; 
-    private MenuPilaView menupila;
+public final class Menu {
+    private final Consultorio service;
+    private final ConsultorioPila consultorioPila; 
+    private final Medico medicoMock;
+    private final MenuPilaView menuPila;
 
     public Menu() {
-        Paciente paciente = menuPaciente();     
+        Paciente paciente = menuPaciente();
         this.service = new Consultorio(paciente);
+        this.consultorioPila = new ConsultorioPila(paciente);  
         this.medicoMock = menuMedico();
-        this.menupila = new MenuPilaView(service);
+        this.menuPila = new MenuPilaView(consultorioPila);      
     }
-
     public Medico menuMedico() {
         System.out.println("===========Antes de continuar debe registrar un medico===========");
         String identificacionMedico = ConsoleUtils.leerTexto("Ingrese la identificacion del medico: ");
@@ -53,20 +54,11 @@ public class Menu {
             opcion = ConsoleUtils.leerEntero("Seleccione un rol: "); 
 
             switch (opcion) {
-                case 1:
-                    submenuPaciente();
-                    break;
-                case 2:
-                    submenuMedico();
-                    break;
-                case 3:
-                    menupila.iniciar();
-                    break;
-                case 0:
-                    System.out.println("Saliendo del sistema...");
-                    break;
-                default:
-                    System.out.println("Opción inválida. Intente de nuevo.");
+                case 1 -> submenuPaciente();
+                case 2 -> submenuMedico();
+                case 3 -> menuPila.iniciar();
+                case 0 -> System.out.println("Saliendo del sistema...");
+                default -> System.out.println("Opción inválida. Intente de nuevo.");
             }
         }
     }
@@ -84,16 +76,14 @@ public class Menu {
             opcion = ConsoleUtils.leerEntero("Seleccione una opción: ");
 
             switch (opcion) {
-                case 1:
+                case 1 -> {
                     String hora = ConsoleUtils.leerTexto("Hora de la cita (Ej. 10:00 AM): ");
                     String motivo = ConsoleUtils.leerTexto("Motivo: ");
                     service.agregarCita(new Cita(LocalDate.now(), hora, motivo, null, medicoMock));
                     System.out.println("Cita agregada con éxito.");
-                    break;
-                case 2:
-                    mostrarCitas();
-                    break;
-                case 3:
+                }
+                case 2 -> mostrarCitas();
+                case 3 -> {
                     mostrarCitas();
                     if (service.listarCitas().getTamano() > 0) {
                         int indiceActualizar = ConsoleUtils.leerEntero("Ingrese el número de la cita a actualizar: ") - 1;
@@ -106,8 +96,8 @@ public class Menu {
                             System.out.println("Error: No se encontró la cita.");
                         }
                     }
-                    break;
-                case 4:
+                }
+                case 4 -> {
                     mostrarCitas();
                     if (service.listarCitas().getTamano() > 0) {
                         int indiceEliminar = ConsoleUtils.leerEntero("Ingrese el número de la cita a eliminar: ") - 1;
@@ -118,12 +108,9 @@ public class Menu {
                             System.out.println("Error: No se pudo eliminar la cita.");
                         }
                     }
-                    break;
-                case 0:
-                    System.out.println("Regresando al menú principal...");
-                    break;
-                default:
-                    System.out.println("Opción inválida.");
+                }
+                case 0 -> System.out.println("Regresando al menú principal...");
+                default -> System.out.println("Opción inválida.");
             }
         }
     }
@@ -141,38 +128,33 @@ public class Menu {
         opcion = ConsoleUtils.leerEntero("Seleccione una opción: ");
 
         switch (opcion) {
-            case 1:
+            case 1 -> {
                 String motivoCons = ConsoleUtils.leerTexto("Motivo de consulta: ");
                 String diag = ConsoleUtils.leerTexto("Diagnóstico: ");
                 String trat = ConsoleUtils.leerTexto("Tratamiento: ");
-                service.registrarConsulta(motivoCons, diag, trat, LocalDate.now());
+                consultorioPila.registrarConsulta(motivoCons, diag, trat, LocalDate.now());
                 System.out.println("Consulta registrada con éxito.");
-                break;
-            case 2:
-                if (service.sinConsultasPorRetirar()) {
+            }
+            case 2 -> {
+                if (consultorioPila.sinConsultasPorRetirar()) {
                     System.out.println("No hay consultas por retirar.");
                 } else {
-                    Consulta retirada = service.retirarUltimaConsulta();
+                    Consulta retirada = consultorioPila.retirarUltimaConsulta();
                     System.out.println("Consulta retirada:");
                     imprimirConsulta(retirada);
                 }
-                break;
-            case 3:
-                if (service.sinConsultasPorRetirar()) {
+            }
+            case 3 -> {
+                if (consultorioPila.sinConsultasPorRetirar()) {
                     System.out.println("No hay consultas registradas.");
                 } else {
                     System.out.println("Última consulta registrada:");
-                    imprimirConsulta(service.consultarUltimaConsulta());
+                    imprimirConsulta(consultorioPila.consultarUltimaConsulta());
                 }
-                break;
-            case 4:
-                System.out.println("Consultas registradas: " + service.contarConsultas());
-                break;
-            case 0:
-                System.out.println("Regresando al menú principal...");
-                break;
-            default:
-                System.out.println("Opción inválida.");
+            }
+            case 4 -> System.out.println("Consultas registradas: " + consultorioPila.contarConsultas());
+            case 0 -> System.out.println("Regresando al menú principal...");
+            default -> System.out.println("Opción inválida.");
         }
     }
 }

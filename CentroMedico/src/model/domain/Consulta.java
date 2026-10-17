@@ -1,6 +1,5 @@
 package model.domain;
 
-import java.security.KeyStore.LoadStoreParameter;
 import java.time.LocalDate;
 
 public class Consulta {
@@ -11,11 +10,11 @@ public class Consulta {
     private LocalDate fecha;
     private Paciente paciente;
 
-    public Consulta(String motivo, String diagnostico, String tratamiento, LocalDate fecha) {
+    public Consulta(String motivo, String diagnostico, String tratamiento, LocalDate fecha, Paciente paciente) {
         this.motivo = motivo;
         this.diagnostico = diagnostico;
         this.tratamiento = tratamiento;
-        this.fecha = LocalDate.now();
+        this.fecha = fecha;
         this.paciente = paciente;
     }
 
