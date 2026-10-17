@@ -1,15 +1,14 @@
 package view;
 
 import java.time.LocalDate;
-
 import model.domain.Consulta;
-import service.Consultorio;
+import service.ConsultorioPila;
 import utils.ConsoleUtils;
 
 public class MenuPilaView {
-    private final Consultorio consultorio;
+    private final ConsultorioPila consultorio;
 
-    public MenuPilaView(Consultorio consultorio) {
+    public MenuPilaView(ConsultorioPila consultorio) {
         this.consultorio = consultorio;
     }
 
