@@ -14,6 +14,7 @@ public final class Menu {
     private final ConsultorioPila consultorioPila; 
     private final Medico medicoMock;
     private final MenuPilaView menuPila;
+    private final MenuColaView menuCola;
 
     public Menu() {
         Paciente paciente = menuPaciente();
@@ -21,7 +22,9 @@ public final class Menu {
         this.consultorioPila = new ConsultorioPila(paciente);  
         this.medicoMock = menuMedico();
         this.menuPila = new MenuPilaView(consultorioPila);      
+        this.menuCola = new MenuColaView(service); 
     }
+
     public Medico menuMedico() {
         System.out.println("===========Antes de continuar debe registrar un medico===========");
         String identificacionMedico = ConsoleUtils.leerTexto("Ingrese la identificacion del medico: ");
@@ -49,6 +52,7 @@ public final class Menu {
             System.out.println("1. Ingresar como Paciente (Gestión de Citas)");
             System.out.println("2. Ingresar como Médico (Gestión de Consultas)");
             System.out.println("3. Menu De Consultas (Pila)");
+            System.out.println("4. Menu Sala de Espera (Cola)");
             System.out.println("0. Salir");
             
             opcion = ConsoleUtils.leerEntero("Seleccione un rol: "); 
@@ -57,6 +61,7 @@ public final class Menu {
                 case 1 -> submenuPaciente();
                 case 2 -> submenuMedico();
                 case 3 -> menuPila.iniciar();
+                case 4 -> menuCola.mostrarMenu(); 
                 case 0 -> System.out.println("Saliendo del sistema...");
                 default -> System.out.println("Opción inválida. Intente de nuevo.");
             }
@@ -116,48 +121,48 @@ public final class Menu {
     }
 
     private void submenuMedico() {
-    int opcion = -1;
-    while (opcion != 0) {
-        System.out.println("\n--- MENÚ MÉDICO (CONSULTAS) ---");
-        System.out.println("1. Registrar Consulta");
-        System.out.println("2. Retirar Última Consulta");
-        System.out.println("3. Ver Última Consulta");
-        System.out.println("4. Contar Consultas");
-        System.out.println("0. Volver al Menú Principal");
+        int opcion = -1;
+        while (opcion != 0) {
+            System.out.println("\n--- MENÚ MÉDICO (CONSULTAS) ---");
+            System.out.println("1. Registrar Consulta");
+            System.out.println("2. Retirar Última Consulta");
+            System.out.println("3. Ver Última Consulta");
+            System.out.println("4. Contar Consultas");
+            System.out.println("0. Volver al Menú Principal");
 
-        opcion = ConsoleUtils.leerEntero("Seleccione una opción: ");
+            opcion = ConsoleUtils.leerEntero("Seleccione una opción: ");
 
-        switch (opcion) {
-            case 1 -> {
-                String motivoCons = ConsoleUtils.leerTexto("Motivo de consulta: ");
-                String diag = ConsoleUtils.leerTexto("Diagnóstico: ");
-                String trat = ConsoleUtils.leerTexto("Tratamiento: ");
-                consultorioPila.registrarConsulta(motivoCons, diag, trat, LocalDate.now());
-                System.out.println("Consulta registrada con éxito.");
-            }
-            case 2 -> {
-                if (consultorioPila.sinConsultasPorRetirar()) {
-                    System.out.println("No hay consultas por retirar.");
-                } else {
-                    Consulta retirada = consultorioPila.retirarUltimaConsulta();
-                    System.out.println("Consulta retirada:");
-                    imprimirConsulta(retirada);
+            switch (opcion) {
+                case 1 -> {
+                    String motivoCons = ConsoleUtils.leerTexto("Motivo de consulta: ");
+                    String diag = ConsoleUtils.leerTexto("Diagnóstico: ");
+                    String trat = ConsoleUtils.leerTexto("Tratamiento: ");
+                    consultorioPila.registrarConsulta(motivoCons, diag, trat, LocalDate.now());
+                    System.out.println("Consulta registrada con éxito.");
                 }
-            }
-            case 3 -> {
-                if (consultorioPila.sinConsultasPorRetirar()) {
-                    System.out.println("No hay consultas registradas.");
-                } else {
-                    System.out.println("Última consulta registrada:");
-                    imprimirConsulta(consultorioPila.consultarUltimaConsulta());
+                case 2 -> {
+                    if (consultorioPila.sinConsultasPorRetirar()) {
+                        System.out.println("No hay consultas por retirar.");
+                    } else {
+                        Consulta retirada = consultorioPila.retirarUltimaConsulta();
+                        System.out.println("Consulta retirada:");
+                        imprimirConsulta(retirada);
+                    }
                 }
+                case 3 -> {
+                    if (consultorioPila.sinConsultasPorRetirar()) {
+                        System.out.println("No hay consultas registradas.");
+                    } else {
+                        System.out.println("Última consulta registrada:");
+                        imprimirConsulta(consultorioPila.consultarUltimaConsulta());
+                    }
+                }
+                case 4 -> System.out.println("Consultas registradas: " + consultorioPila.contarConsultas());
+                case 0 -> System.out.println("Regresando al menú principal...");
+                default -> System.out.println("Opción inválida.");
             }
-            case 4 -> System.out.println("Consultas registradas: " + consultorioPila.contarConsultas());
-            case 0 -> System.out.println("Regresando al menú principal...");
-            default -> System.out.println("Opción inválida.");
         }
     }
-}
 
     private void mostrarCitas() {
         System.out.println("\n--- Lista de Citas ---");
@@ -173,8 +178,8 @@ public final class Menu {
     }
 
     private void imprimirConsulta(Consulta c) {
-    System.out.println("Motivo: " + c.getMotivo()
-            + " | Diagnóstico: " + c.getDiagnostico()
-            + " | Tratamiento: " + c.getTratamiento());
-}
+        System.out.println("Motivo: " + c.getMotivo()
+                + " | Diagnóstico: " + c.getDiagnostico()
+                + " | Tratamiento: " + c.getTratamiento());
+    }
 }
