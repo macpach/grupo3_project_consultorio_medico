@@ -4,6 +4,7 @@ import model.structures.Pila;
 
 public class main {
     public static void main(String[] args) {
+        
         Pila<String> pila = new Pila<>();
         pila.push("A");
         pila.push("B");
