@@ -79,6 +79,7 @@ public class ListaDoble<T> {
         return head;
     }
 
+    // ---------- Cursor ----------
     public T irAlInicio() {
         actual = head;
         return actual != null ? actual.getDato() : null;
@@ -89,20 +90,32 @@ public class ListaDoble<T> {
         return actual != null ? actual.getDato() : null;
     }
 
+    public boolean hayAnterior() {
+        return actual != null && actual.getAnterior() != null;
+    }
+
+    public boolean haySiguiente() {
+        return actual != null && actual.getSiguiente() != null;
+    }
+
+    public boolean haySeleccionado() {
+        return actual != null;
+    }
+
     public T siguiente() {
         if (actual == null || actual.getSiguiente() == null) {
             throw new NoSuchElementException("No hay un elemento siguiente");
         }
-             actual = actual.getSiguiente();
-             return actual.getDato();
-        }
+        actual = actual.getSiguiente();
+        return actual.getDato();
+    }
 
     public T anterior() {
-    if (actual == null || actual.getAnterior() == null) {
-        throw new NoSuchElementException("No hay un elemento anterior");
-    }
-    actual = actual.getAnterior();
-    return actual.getDato();
+        if (actual == null || actual.getAnterior() == null) {
+            throw new NoSuchElementException("No hay un elemento anterior");
+        }
+        actual = actual.getAnterior();
+        return actual.getDato();
     }
 
     public T retirarActual() {
@@ -131,6 +144,7 @@ public class ListaDoble<T> {
         return dato;
     }
 
+    // ---------- Recorridos ----------
     public String recorrerAdelante() {
         StringBuilder sb = new StringBuilder();
         NodoDoble<T> temp = head;

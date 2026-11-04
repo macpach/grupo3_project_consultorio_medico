@@ -109,7 +109,7 @@ public final class Menu {
             System.out.println("3. Menu De Consultas (Pila)");
             System.out.println("4. Menu Sala de Espera (Cola)");
             System.out.println("5. Menu Agenda (Lista Doble)");
-            System.out.println("6. Guardar / cargar archivos");
+            System.out.println("6. Guardar todo (pacientes, médicos y agenda)");
             System.out.println("0. Salir");
 
             opcion = ConsoleUtils.leerEntero("Seleccione un rol: ");
@@ -120,7 +120,7 @@ public final class Menu {
                 case 3 -> menuPila.iniciar();
                 case 4 -> menuCola.mostrarMenu();
                 case 5 -> menuAgenda.iniciar();
-                case 6 -> submenuArchivos();
+                case 6 -> guardarTodo();
                 case 0 -> {
                     guardarTodo();
                     System.out.println("Saliendo del sistema...");
@@ -134,30 +134,6 @@ public final class Menu {
         System.out.println(pacienteService.guardarPacientes());
         System.out.println(medicoService.guardarMedicos());
         System.out.println(agendaService.guardarAgenda());
-    }
-
-    private void submenuArchivos() {
-        int opcion = -1;
-        while (opcion != 0) {
-            System.out.println("\n--- ARCHIVOS (data/) ---");
-            System.out.println("1. Guardar todo (pacientes, médicos y agenda)");
-            System.out.println("2. Cargar todo desde los archivos");
-            System.out.println("0. Volver al Menú Principal");
-
-            opcion = ConsoleUtils.leerEntero("Seleccione una opción: ");
-
-            switch (opcion) {
-                case 1 -> guardarTodo();
-                case 2 -> {
-                    // mismo orden que al arrancar: la agenda se enlaza con lo ya cargado
-                    System.out.println(pacienteService.cargarPacientes());
-                    System.out.println(medicoService.cargarMedicos());
-                    System.out.println(agendaService.cargarAgenda());
-                }
-                case 0 -> System.out.println("Regresando al menú principal...");
-                default -> System.out.println("Opción inválida.");
-            }
-        }
     }
 
     private void submenuPaciente() {
@@ -274,4 +250,4 @@ public final class Menu {
                 + " | Diagnóstico: " + c.getDiagnostico()
                 + " | Tratamiento: " + c.getTratamiento());
     }
-}
+} 

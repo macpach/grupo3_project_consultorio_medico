@@ -13,7 +13,7 @@ import model.domain.Paciente;
 import model.structures.ListaSimple;
 import model.structures.Nodo;
 
-public class PacienteService {
+public final class PacienteService {
 
     private static final String ARCHIVO_PACIENTES = "data/pacientes.txt";
     private static final String SEPARADOR = ";";

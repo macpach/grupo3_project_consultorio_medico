@@ -11,7 +11,7 @@ import model.domain.Medico;
 import model.structures.ListaSimple;
 import model.structures.Nodo;
 
-public class MedicoService {
+public final class MedicoService {
 
     private static final String ARCHIVO_MEDICOS = "data/medicos.txt";
     private static final String SEPARADOR = ";";
@@ -48,6 +48,23 @@ public class MedicoService {
     }
 
     // ---------- Persistencia ----------
+    private boolean hayCampoVacio(String[] campos) {
+        for (String campo : campos) {
+            if (campo.trim().isEmpty()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private String textoCargados(int cargados, String que, int omitidas, StringBuilder numeros) {
+        String texto = "Se cargaron " + cargados + " " + que;
+        if (omitidas > 0) {
+            texto += " (se omitieron " + omitidas + " líneas dañadas, número de línea: " + numeros + ")";
+        }
+        return texto;
+    }
+
     private String limpiar(String texto) {
         return texto == null ? "" : texto.replace(SEPARADOR, ",").replace("\n", " ");
     }
@@ -91,21 +108,32 @@ public class MedicoService {
 
         medicos.vaciar();
 
+        int numeroLinea = 0;
+        int omitidas = 0;
+        StringBuilder numeros = new StringBuilder();
+
         try (BufferedReader lector = new BufferedReader(new FileReader(archivo))) {
             String linea;
             while ((linea = lector.readLine()) != null) {
-                String[] campos = linea.split(SEPARADOR, -1);
-                if (campos.length != 5) {
+                numeroLinea++;
+                if (linea.trim().isEmpty()) {
                     continue;
                 }
-                try {
-                    Medico m = new Medico(campos[0], campos[1], campos[2], campos[3], campos[4]);
-                    if (buscarMedico(m.getIdentificacion()) == null) {
-                        medicos.insertarFinal(m);
+                Medico m = null;
+                String[] campos = linea.split(SEPARADOR, -1);
+                if (campos.length == 5 && !hayCampoVacio(campos)) {
+                    try {
+                        m = new Medico(campos[0], campos[1], campos[2], campos[3], campos[4]);
+                    } catch (IllegalArgumentException e) {
+                        m = null;
                     }
-                } catch (IllegalArgumentException e) {
-                    // identificacion vacia: se omite la linea
                 }
+                if (m == null || buscarMedico(m.getIdentificacion()) != null) {
+                    omitidas++;
+                    numeros.append(numeros.length() == 0 ? "" : ", ").append(numeroLinea);
+                    continue;
+                }
+                medicos.insertarFinal(m);
             }
         } catch (FileNotFoundException e) {
             return "No existe " + ARCHIVO_MEDICOS + "; se inicia con la lista vacía";
@@ -113,6 +141,6 @@ public class MedicoService {
             return "No se pudo leer: " + e.getMessage();
         }
 
-        return "Se cargaron " + medicos.getTamano() + " médicos";
+        return textoCargados(medicos.getTamano(), "médicos", omitidas, numeros);
     }
 }

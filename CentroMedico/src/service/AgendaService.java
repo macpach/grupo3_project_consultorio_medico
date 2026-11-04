@@ -46,6 +46,45 @@ public class AgendaService {
         agenda.getCitas().insertarAlFinal(new Cita(fecha, hora, motivo, paciente, medico));
     }
 
+    // Misma operacion con la fecha como texto yyyy-MM-dd (la View solo maneja texto)
+    public void registrarCita(String idPaciente, String idMedico, String fecha, String hora, String motivo) {
+        registrarCita(idPaciente, idMedico, LocalDate.parse(fecha), hora, motivo);
+    }
+
+    // ---------- Chequeos previos para la View (evitan excepciones) ----------
+    public boolean fechaValida(String fecha) {
+        try {
+            LocalDate.parse(fecha);
+            return true;
+        } catch (DateTimeException e) {
+            return false;
+        }
+    }
+
+    public boolean existePaciente(String idPaciente) {
+        return pacienteService.buscarPaciente(idPaciente) != null;
+    }
+
+    public boolean existeMedico(String idMedico) {
+        return buscarMedico(idMedico) != null;
+    }
+
+    public boolean hayCitas() {
+        return !agenda.getCitas().isEmpty();
+    }
+
+    public boolean hayCitaAnterior() {
+        return agenda.getCitas().hayAnterior();
+    }
+
+    public boolean hayCitaSiguiente() {
+        return agenda.getCitas().haySiguiente();
+    }
+
+    public boolean hayCitaSeleccionada() {
+        return agenda.getCitas().haySeleccionado();
+    }
+
     public String listarCitasEnOrden() {
         if (agenda.getCitas().isEmpty()) {
             return "No hay citas en la agenda";
@@ -88,6 +127,23 @@ public class AgendaService {
     }
 
     // ---------- Persistencia (Parte 5) ----------
+    private boolean hayCampoVacio(String[] campos) {
+        for (String campo : campos) {
+            if (campo.trim().isEmpty()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private String textoCargados(int cargados, String que, int omitidas, StringBuilder numeros) {
+        String texto = "Se cargaron " + cargados + " " + que;
+        if (omitidas > 0) {
+            texto += " (se omitieron " + omitidas + " líneas dañadas, número de línea: " + numeros + ")";
+        }
+        return texto;
+    }
+
     private String limpiar(String texto) {
         return texto == null ? "" : texto.replace(SEPARADOR, ",").replace("\n", " ");
     }
@@ -135,25 +191,36 @@ public class AgendaService {
             agenda.getCitas().eliminar(agenda.getCitas().getHead());
         }
 
+        int numeroLinea = 0;
+        int omitidas = 0;
+        StringBuilder numeros = new StringBuilder();
+
         try (BufferedReader lector = new BufferedReader(new FileReader(archivo))) {
             String linea;
             while ((linea = lector.readLine()) != null) {
+                numeroLinea++;
+                if (linea.trim().isEmpty()) {
+                    continue;
+                }
+                Cita cita = null;
                 String[] campos = linea.split(SEPARADOR, -1);
-                if (campos.length != 5) {
-                    continue; // linea con campos de menos o de mas
+                if (campos.length == 5 && !hayCampoVacio(campos)) {
+                    Paciente paciente = pacienteService.buscarPaciente(campos[0]);
+                    Medico medico = buscarMedico(campos[1]);
+                    if (paciente != null && medico != null) { // si no se puede enlazar, se omite
+                        try {
+                            cita = new Cita(LocalDate.parse(campos[2]), campos[3], campos[4], paciente, medico);
+                        } catch (DateTimeException e) {
+                            cita = null; // fecha invalida
+                        }
+                    }
                 }
-                Paciente paciente = pacienteService.buscarPaciente(campos[0]);
-                Medico medico = buscarMedico(campos[1]);
-                if (paciente == null || medico == null) {
-                    continue; // no se puede enlazar: se omite la linea
+                if (cita == null) {
+                    omitidas++;
+                    numeros.append(numeros.length() == 0 ? "" : ", ").append(numeroLinea);
+                    continue;
                 }
-                try {
-                    LocalDate fecha = LocalDate.parse(campos[2]);
-                    // insertarAlFinal: mismo orden del archivo
-                    agenda.getCitas().insertarAlFinal(new Cita(fecha, campos[3], campos[4], paciente, medico));
-                } catch (DateTimeException e) {
-                    // fecha invalida: se omite la linea
-                }
+                agenda.getCitas().insertarAlFinal(cita); // mismo orden del archivo
             }
         } catch (FileNotFoundException e) {
             return "No existe " + ARCHIVO_AGENDA + "; se inicia con la agenda vacía";
@@ -161,6 +228,6 @@ public class AgendaService {
             return "No se pudo leer: " + e.getMessage();
         }
 
-        return "Se cargaron " + agenda.getCitas().size() + " citas";
+        return textoCargados(agenda.getCitas().size(), "citas", omitidas, numeros);
     }
 }
