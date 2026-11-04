@@ -1,5 +1,7 @@
 package model.structures;
 
+import java.util.NoSuchElementException;
+
 public class ListaDoble<T> {
     private NodoDoble<T> head;
     private NodoDoble<T> tail;
@@ -88,25 +90,26 @@ public class ListaDoble<T> {
     }
 
     public T siguiente() {
-        if (actual != null && actual.getSiguiente() != null) {
-            actual = actual.getSiguiente();
-            return actual.getDato();
+        if (actual == null || actual.getSiguiente() == null) {
+            throw new NoSuchElementException("No hay un elemento siguiente");
         }
-        return null;
-    }
+             actual = actual.getSiguiente();
+             return actual.getDato();
+        }
 
     public T anterior() {
-        if (actual != null && actual.getAnterior() != null) {
-            actual = actual.getAnterior();
-            return actual.getDato();
-        }
-        return null;
+    if (actual == null || actual.getAnterior() == null) {
+        throw new NoSuchElementException("No hay un elemento anterior");
+    }
+    actual = actual.getAnterior();
+    return actual.getDato();
     }
 
     public T retirarActual() {
         if (actual == null) {
-            return null;
+            throw new NoSuchElementException("No hay un elemento seleccionado");
         }
+
         NodoDoble<T> eliminado = actual;
         T dato = eliminado.getDato();
 

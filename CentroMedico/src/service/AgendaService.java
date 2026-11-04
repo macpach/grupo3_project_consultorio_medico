@@ -9,7 +9,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.time.DateTimeException;
 import java.time.LocalDate;
-import model.domain.AgendaCitas;
+import model.domain.Agenda;
 import model.domain.Cita;
 import model.domain.Medico;
 import model.domain.Paciente;
@@ -21,7 +21,7 @@ public class AgendaService {
     private static final String SEPARADOR = ";";
 
     // Una sola agenda por Service
-    private final AgendaCitas agenda = new AgendaCitas("Agenda del consultorio");
+    private final Agenda agenda = new Agenda("Agenda del consultorio");
     private final PacienteService pacienteService;
     private final MedicoService medicoService;
 

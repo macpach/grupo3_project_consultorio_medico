@@ -2,6 +2,7 @@ package model.domain;
 import model.structures.Pila;
 import java.time.LocalDate;
 import model.structures.ListaSimple;
+import java.time.Period;
 
 public class Paciente extends Persona {
 
@@ -9,14 +10,34 @@ public class Paciente extends Persona {
     private String eps;
     private Pila<Consulta> historialConsultas;
     private ListaSimple<Cita> citas;
+    private LocalDate fechaNacimiento;
+    private String tipoSangre;
 
-    public Paciente(String identificacion, String nombre, String telefono, int edad, String eps) {
-        super(identificacion, nombre, telefono);
-        this.edad = edad;
-        this.eps = eps;
-        this.historialConsultas = new Pila<Consulta>();
-        this.citas = new ListaSimple<>();
+
+    public Paciente(String identificacion, String nombre, String telefono,
+                LocalDate fechaNacimiento, String tipoSangre) {
+    this(identificacion, nombre, telefono, calcularEdad(fechaNacimiento), "No registrada");
+    this.fechaNacimiento = fechaNacimiento;
+    this.tipoSangre = tipoSangre;
+   }
+
+    public Paciente(String identificacion, String nombre, String telefono,
+                int edad, String eps) {
+    super(identificacion, nombre, telefono);
+    this.edad = edad;
+    this.eps = eps;
+    this.historialConsultas = new Pila<>();
+    this.citas = new ListaSimple<>();
+    this.fechaNacimiento = null;
+    this.tipoSangre = "No registrada";
+   }
+
+    private static int calcularEdad(LocalDate fecha) {
+    return fecha == null ? 0 : Period.between(fecha, LocalDate.now()).getYears();
     }
+
+    public LocalDate getFechaNacimiento() { return fechaNacimiento; }
+     public String getTipoSangre() { return tipoSangre; }
 
     @Override
     public String rolEnConsulta() {
