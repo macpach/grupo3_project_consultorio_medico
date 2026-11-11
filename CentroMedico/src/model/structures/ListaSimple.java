@@ -80,5 +80,12 @@ public class ListaSimple<T> {
         return false;
     }
 
+    public Nodo<T> getCabeza() { return cabeza; }
+
+    public void vaciar() {
+    cabeza = null;
+    tamano = 0;
+    }
+
     public int getTamano() { return tamano; }
 }
