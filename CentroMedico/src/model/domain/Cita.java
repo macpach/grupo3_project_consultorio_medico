@@ -18,6 +18,13 @@ public class Cita {
         this.medico = medico;
     }
 
+    @Override
+    public String toString() {
+        return fecha + " " + hora + " | Paciente: " + paciente.getNombre() + " | Medico: " + medico.getNombre() + " |" + motivo;
+    }
+
+
+
     // Getters y Setters
     public LocalDate getFecha() {
         return fecha;
